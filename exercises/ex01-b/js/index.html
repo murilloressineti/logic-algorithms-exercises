@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa para uma pizzaria, o qual leia o valor total de uma conta e quantos clientes vão pagá-la.
+    Calcule e informe o valor a ser pago por cliente.
+    Exemplo:
+    Valor da Conta R$: 90.00
+    Número de Clientes: 3
+    Valor por Cliente: R$: 30.00
+  -->
+  <body>
+    <h1>Caixa Pizzaria</h1>
+
+    <form>
+      <label for="account">Valor total da Conta:</label>
+      <input type="number" name="account" id="account" placeholder="R$" />
+
+      <label for="clients">Número de Clientes:</label>
+      <input type="number" name="clients" id="clients" />
+
+      <input type="submit" value="Calcular Divisão" />
+    </form>
+
+    <h3 id="result"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const account = Number(form.account.value);
+        const clients = Number(form.clients.value);
+
+        const perClient = account / clients;
+
+        result.innerText = `Valor por Cliente: R$${perClient.toFixed(2)}`;
+      });
+    </script>
+  </body>
+</html>

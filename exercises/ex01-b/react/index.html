@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caixa Pizzaria</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-pizza-bg: #f6eacc;
+        --color-pizza-red: #b23935;
+        --color-pizza-green: #389244;
+        --color-pizza-hover: #24722f;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+    Enunciado do exercício:
+    Elaborar um programa para uma pizzaria, o qual leia o valor total de uma conta e quantos clientes vão pagá-la.
+    Calcule e informe o valor a ser pago por cliente.
+    Exemplo:
+    Valor da Conta R$: 90.00
+    Número de Clientes: 3
+    Valor por Cliente: R$: 30.00
+  -->
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col mb-8">
+              <span className="text-5xl block mb-2">🍕</span>
+              <h1 className="text-2xl font-bold text-pizza-red uppercase tracking-widest">
+                Caixa Pizzaria
+              </h1>
+            </div>
+          );
+        }
+
+        function Cashier() {
+          const [accountValue, setAccountValue] = React.useState("");
+          const [clientsValue, setClientsValue] = React.useState("");
+          const [result, setResult] = React.useState("");
+
+          function convertToNumber(value) {
+            return Number(value.replace(",", "."));
+          }
+
+          function formatBR(value) {
+            return value.toFixed(2).replace(".", ",");
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const account = convertToNumber(accountValue);
+            const clients = convertToNumber(clientsValue);
+
+            const perClient = account / clients;
+
+            setResult(formatBR(perClient));
+          }
+
+          return (
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label htmlFor="account" className="font-bold">
+                    Valor total da Conta:
+                  </label>
+                  <input
+                    type="text"
+                    name="account"
+                    id="account"
+                    placeholder="R$"
+                    className="border border-gray-300 rounded-sm p-1.5 w-full"
+                    value={accountValue}
+                    onChange={(e) => setAccountValue(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="clients" className="font-bold">
+                    Número de Clientes:
+                  </label>
+                  <input
+                    type="number"
+                    name="clients"
+                    id="clients"
+                    placeholder="3"
+                    className="border border-gray-300 rounded-sm p-1.5 w-full"
+                    value={clientsValue}
+                    onChange={(e) => setClientsValue(e.target.value)}
+                  />
+                </div>
+
+                <input
+                  type="submit"
+                  value="Calcular Divisão"
+                  className="text-white font-bold p-2 bg-pizza-green w-full rounded-lg shadow-sm cursor-pointer hover:bg-pizza-hover transition-all duration-300"
+                />
+              </div>
+
+              <div>
+                {result && (
+                  <div className="bg-pizza-bg flex items-center justify-center p-2 flex-col mt-4 rounded-lg">
+                    <p className="font-bold">Valor por Cliente</p>
+                    <p className="text-4xl font-bold text-pizza-green">
+                      R$ {result}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </form>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-pizza-bg flex items-center justify-center">
+              <div className="bg-white p-8 rounded-lg shadow-lg w-96 max-w-md border-t-6 border-t-pizza-red">
+                <Header />
+                <Cashier />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
