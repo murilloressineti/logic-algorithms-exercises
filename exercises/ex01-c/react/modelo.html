@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout Loja</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        /* Fundo da página e bordas (Slate) */
+        --color-store-bg: #ecf0f3;
+        --color-store-header: #3d4d64;
+
+        /* Botão de Ação (Blue) */
+        --color-store-primary: #3b79c7;
+        --color-store-hover: #2961a5;
+
+        /* Área de Sucesso/Dinheiro (Green) */
+        --color-store-green-bg: #e2f3e5;
+        --color-store-green-text: #348445;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+    Enunciado do exercício:
+    Elaborar um programa para uma loja, o qual leia o preço de um produto e informe as opções de pagamento da loja. Calcule e informe o valor para pagamento à vista com 10% de desconto e o valor em 3x.
+    Exemplo:
+    Preço: R$ 60.00
+    À vista R$ 54,00
+    Ou 3x de R$ 20,00
+  -->
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col p-4 bg-store-header text-white rounded-t-lg">
+              <span className="text-5xl block mb-2">🏪</span>
+              <h1 className="text-2xl font-bold">Checkout Loja</h1>
+              <p>Simula as condições de pagamento</p>
+            </div>
+          );
+        }
+
+        function Checkout() {
+          const [select, setSelected] = React.useState();
+
+          return (
+            <form className="p-4">
+              <div>
+                <label htmlFor="inPrice">Valor do Produto</label>
+                <input
+                  type="text"
+                  name="inPrice"
+                  id="inPrice"
+                  placeholder="R$"
+                  className="w-full border border-slate-300 rounded-lg p-2 mb-4"
+                />
+
+                <input
+                  type="submit"
+                  value="Calcular Opções"
+                  className="text-white bg-store-primary hover:bg-store-hover cursor-pointer transition-all duration-300 w-full p-2 rounded-lg"
+                />
+              </div>
+
+              <div className="border border-stone-200 my-4"></div>
+
+              <div className="flex flex-col gap-2">
+                {/* Opção 1 */}
+                <div className="hover:bg-store-green-bg hover:text-store-green-text flex items-center justify-center gap-7 border border-slate-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300">
+                  <span className="text-6xl">💵</span>
+                  <div>
+                    <p>À vista (10% OFF)</p>
+                    <p className="text-2xl font-bold">R$ 54,00</p>
+                    <span className="text-sm">Economia de R$ 6,00</span>
+                  </div>
+                </div>
+
+                {/* Opção 2 */}
+                <div className=" hover:bg-store-green-bg hover:text-store-green-text flex items-center justify-center gap-7 border border-stone-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300">
+                  <span className="text-6xl">💳</span>
+                  <div>
+                    <p>Parcelado</p>
+                    <p className="text-2xl font-bold">R$ 20,00</p>
+                    <span className="text-sm">3x mensais</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-center text-sm text-neutral-600 mt-4">
+                Preço original: R$ 60,00
+              </p>
+            </form>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-store-bg flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-lg w-96 max-w-md">
+                <Header />
+                <Checkout />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
