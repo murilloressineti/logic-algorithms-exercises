@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title></title>
+    <title>Checkout Loja</title>
   </head>
   <!--
     Enunciado do exercício:
@@ -16,8 +16,48 @@
   <body>
     <h1>Loja</h1>
     <form>
-      <label for="">Preço</label>
-      <input type="text" name="" id="">
+      <label for="inPrice">Preço</label>
+      <input type="text" name="inPrice" id="inPrice" placeholder="R$" />
+
+      <input type="submit" value="Calcular" />
     </form>
+
+    <h3 id="result"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      function convertToNumber(value) {
+        value = value.trim();
+
+        value = value.replace(",", ".");
+
+        return Number(value);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const price = convertToNumber(form.inPrice.value);
+
+        if (isNaN(price) || price <= 0) {
+          alert("Digite um valor válido");
+          return;
+        }
+
+        const payFull = price - price * 0.1;
+        const payInstallment = price / 3;
+
+        function formatBR(price) {
+          return price.toFixed(2).replace(".", ",");
+        }
+
+        result.innerText = `
+          Preço: R$ ${formatBR(price)}
+          À vista R$ ${formatBR(payFull)}
+          Ou 3x de R$ ${formatBR(payInstallment)}`;
+      });
+    </script>
   </body>
 </html>
