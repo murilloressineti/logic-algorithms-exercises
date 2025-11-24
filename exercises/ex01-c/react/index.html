@@ -48,10 +48,45 @@
         }
 
         function Checkout() {
+          const [inPriceValue, setInPriceValue] = React.useState("");
+          const [resultPayFull, setResultPayFull] = React.useState("");
+          const [resultEconomy, setResultEconomy] = React.useState("");
+          const [resultPayInstallment, setResultPayInstallment] =
+            React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
           const [select, setSelected] = React.useState();
 
+          function convertToNumber(value) {
+            return Number(value.replace(",", "."));
+          }
+
+          function formatBR(value) {
+            return value.toFixed(2).replace(".", ",");
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const price = convertToNumber(inPriceValue);
+
+            if (isNaN(price) || price <= 0) {
+              alert("Digite um valor válido");
+              return;
+            }
+
+            const payFull = price - price * 0.1;
+            const economy = price - payFull;
+            const payInstallment = price / 3;
+
+            setInPriceValue(formatBR(price));
+            setResultPayFull(formatBR(payFull));
+            setResultEconomy(formatBR(economy));
+            setResultPayInstallment(formatBR(payInstallment));
+
+            setShowResults(true);
+          }
           return (
-            <form className="p-4">
+            <form onSubmit={handleSubmit} className="p-4">
               <div>
                 <label htmlFor="inPrice">Valor do Produto</label>
                 <input
@@ -60,6 +95,10 @@
                   id="inPrice"
                   placeholder="R$"
                   className="w-full border border-slate-300 rounded-lg p-2 mb-4"
+                  value={inPriceValue}
+                  onChange={(e) => {
+                    setInPriceValue(e.target.value);
+                  }}
                 />
 
                 <input
@@ -69,33 +108,43 @@
                 />
               </div>
 
-              <div className="border border-stone-200 my-4"></div>
+              {showResults && (
+                <div className="flex flex-col gap-2">
+                  <div className="border border-stone-200 mt-4 mb-2"></div>
 
-              <div className="flex flex-col gap-2">
-                {/* Opção 1 */}
-                <div className="hover:bg-store-green-bg hover:text-store-green-text flex items-center justify-center gap-7 border border-slate-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300">
-                  <span className="text-6xl">💵</span>
-                  <div>
-                    <p>À vista (10% OFF)</p>
-                    <p className="text-2xl font-bold">R$ 54,00</p>
-                    <span className="text-sm">Economia de R$ 6,00</span>
+                  {/* Opção 1 */}
+                  <div className="hover:bg-store-green-bg hover:text-store-green-text flex items-center border border-slate-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300 w-full">
+                    <div className="flex gap-6">
+                      <span className="text-6xl">💵</span>
+                      <div>
+                        <p>À vista (10% OFF)</p>
+                        <p className="text-2xl font-bold">R$ {resultPayFull}</p>
+                        <span className="text-sm">
+                          Economia de R$ {resultEconomy}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Opção 2 */}
-                <div className=" hover:bg-store-green-bg hover:text-store-green-text flex items-center justify-center gap-7 border border-stone-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300">
-                  <span className="text-6xl">💳</span>
-                  <div>
-                    <p>Parcelado</p>
-                    <p className="text-2xl font-bold">R$ 20,00</p>
-                    <span className="text-sm">3x mensais</span>
+                  {/* Opção 2 */}
+                  <div className="hover:bg-store-green-bg hover:text-store-green-text flex items-center border border-slate-300 hover:border-store-green-text rounded-lg p-2 cursor-pointer transition-all duration-300 w-full ">
+                    <div className="flex gap-6">
+                      <span className="text-6xl">💳</span>
+                      <div>
+                        <p>Parcelado</p>
+                        <p className="text-2xl font-bold">
+                          R$ {resultPayInstallment}
+                        </p>
+                        <span className="text-sm">3x mensais</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <p className="text-center text-sm text-neutral-600 mt-4">
-                Preço original: R$ 60,00
-              </p>
+                  <p className="text-center text-sm text-neutral-600 pt-2">
+                    Preço original: <strong>R$ {inPriceValue}</strong>
+                  </p>
+                </div>
+              )}
             </form>
           );
         }
@@ -103,7 +152,7 @@
         function App() {
           return (
             <main className="min-h-screen bg-store-bg flex items-center justify-center">
-              <div className="bg-white rounded-lg shadow-lg w-96 max-w-md">
+              <div className="bg-white rounded-lg shadow-lg w-92 max-w-md">
                 <Header />
                 <Checkout />
               </div>
