@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boletim Escolar</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia 2 notas de um aluno em uma disciplina. Calcule e informe a média das notas.
+    Exemplo:
+    1ª Nota: 7.0
+    2ª Nota: 8.0
+    Média: 7.5
+  -->
+  <body>
+    <h1>Boletim Escolar</h1>
+
+    <form>
+      <label for="firstNote">1ª Nota:</label>
+      <input type="text" name="firstNote" id="firstNote" />
+
+      <label for="secondNote">2ª Nota:</label>
+      <input type="text" name="secondNote" id="secondNote" />
+
+      <input type="submit" value="Calcular" />
+
+      <h3 id="result"></h3>
+    </form>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      function convertToNumber(value) {
+        value = value.trim();
+
+        value = value.replace(",", ".");
+
+        return Number(value);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const firstNote = convertToNumber(form.firstNote.value);
+        const secondNote = convertToNumber(form.secondNote.value);
+
+        if (isNaN(firstNote) || isNaN(secondNote)) {
+          alert("Digite um valor válido");
+          return;
+        }
+
+        if (firstNote < 0 || secondNote < 0) {
+          alert("Digite um valor válido");
+          return;
+        }
+
+        if (firstNote > 10 || secondNote > 10) {
+          alert("Digite um valor válido");
+          return;
+        }
+
+        const average = (firstNote + secondNote) / 2;
+
+        function format(average) {
+          return average.toFixed(2).replace(".", ",");
+        }
+
+        result.innerText = `Média: ${format(average)}`;
+      });
+    </script>
+  </body>
+</html>
