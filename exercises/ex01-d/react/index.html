@@ -38,8 +38,10 @@
         }
 
         function Calculator() {
-          const [inFirstNote, setInFirstNote] = React.useState();
-          const [inSecondNote, setInSecondNote] = React.useState();
+          const [inFirstNote, setInFirstNote] = React.useState("");
+          const [inSecondNote, setInSecondNote] = React.useState("");
+          const [resultAverage, setResultAverage] = React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
 
           function convertToNumber(value) {
             value = value.trim();
@@ -72,12 +74,10 @@
               return;
             }
 
-            console.log(firstNote);
-            console.log(secondNote);
-
             const average = (firstNote + secondNote) / 2;
 
-            console.log(format(average));
+            setResultAverage(average);
+            setShowResults(true);
           }
 
           return (
@@ -118,10 +118,19 @@
                 </div>
               </form>
 
-              {/*<div id="result" className={`mt-6 text-center font-bold text-2xl ${average >= 7} "text-average-green-text" : text-average-red-text`}>
-                <div className="border-t my-4 border-gray-300"></div>
-              Média: {average}
-              </div>*/}
+              {showResults && (
+                <div
+                  id="result"
+                  className={`mt-6 text-center font-bold text-2xl ${
+                    resultAverage >= 7
+                      ? "text-average-green-text"
+                      : "text-average-red-text"
+                  }`}
+                >
+                  <div className="border-t my-4 border-gray-300"></div>
+                  Média: {format(resultAverage)}
+                </div>
+              )}
             </div>
           );
         }
