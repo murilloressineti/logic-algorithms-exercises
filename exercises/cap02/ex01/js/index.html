@@ -3,11 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Farmácia JS</title>
   </head>
   <!--
     Enunciado do exercício:
     Uma farmácia está com uma promoção – Na compra de duas unidades de um mesmo medicamento, o cliente recebe como desconto os centavos do valor total. Elaborar um programa que leia descrição e preço de um medicamento. Informe o valor do produto na promoção. A Figura 2.9 apresenta a tela com um exemplo de dados de entrada e saída do programa.
   -->
-  <body></body>
+  <body>
+    <h1>Farmácia JS</h1>
+
+    <form>
+      <label for="medicine">Medicamento</label>
+      <input type="text" name="medicine" id="medicine" /> <br />
+
+      <label for="price">Preço R$:</label>
+      <input type="text" name="price" id="price" /><br />
+
+      <input type="submit" value="Mostrar Promoção" />
+
+      <h3 id="medicineResult"></h3>
+      <h3 id="priceResult"></h3>
+    </form>
+
+    <script>
+      const form = document.querySelector("form");
+      const medicineResult = document.getElementById("medicineResult");
+      const priceResult = document.getElementById("priceResult");
+
+      function convertToNumber(value) {
+        value = value.trim();
+
+        value = value.replace(",", ".");
+
+        return Number(value);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const medicine = form.medicine.value;
+        const price = convertToNumber(form.price.value);
+
+        const resultPrice = Math.floor(price * 2);
+
+        function format(price) {
+          return price.toFixed(2).replace(".", ",");
+        }
+
+        medicineResult.innerText = `Promoção de ${medicine}`;
+        priceResult.innerText = `Leve 2 por apenas: R$${format(resultPrice)}`;
+      });
+    </script>
+  </body>
 </html>
