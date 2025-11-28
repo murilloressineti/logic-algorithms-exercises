@@ -58,13 +58,17 @@
           function handleSubmit(e) {
             e.preventDefault();
 
-            const account = convertToNumber(accountValue);
+            const account = convertToNumber(accountRef.current.value);
             const clients = convertToNumber(clientsValue);
 
             const perClient = account / clients;
 
             setResult(formatBR(perClient));
+
+            console.log(accountRef)
           }
+
+          const accountRef = React.useRef("");
 
           return (
             <form onSubmit={handleSubmit}>
@@ -79,8 +83,9 @@
                     id="account"
                     placeholder="R$"
                     className="border border-gray-300 rounded-sm p-1.5 w-full"
-                    value={accountValue}
-                    onChange={(e) => setAccountValue(e.target.value)}
+                    ref={accountRef}
+                    // value={accountValue}
+                    // onChange={(e) => setAccountValue(e.target.value)}
                   />
                 </div>
 
