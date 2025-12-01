@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmácia JS</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-pharmacy-bg: #ecf4f6;
+
+        --color-green-primary: #53b99a;
+        --color-green-hover: #2f7c64;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Uma farmácia está com uma promoção – Na compra de duas unidades de um mesmo medicamento, o cliente recebe como desconto os centavos do valor total. Elaborar um programa que leia descrição e preço de um medicamento. Informe o valor do produto na promoção.
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col pt-4">
+              <span className="text-5xl mb-2">💊</span>
+              <h1 className="text-2xl font-bold">Fármacia JS</h1>
+            </div>
+          );
+        }
+
+        function Promotion() {
+          const [medicine, setMedicine] = React.useState("");
+          const [price, setPrice] = React.useState("");
+          const [promotionResult, setPromotionResult] = React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
+
+          function convertToNumber(value) {
+            value = value.trim();
+            value = value.replace(",", ".");
+
+            return Number(value);
+          }
+
+          function convertBRL(value) {
+            return new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(value.toFixed(2));
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const name = medicine.trim();
+
+            if (name == "") {
+              alert("Por favor, digite o nome do medicamento.");
+              return;
+            }
+
+            const priceValue = convertToNumber(price);
+            const resultPrice = Math.floor(priceValue * 2);
+
+            setPromotionResult(convertBRL(resultPrice));
+            setShowResults(true);
+          }
+
+          return (
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col p-6 gap-4">
+                <div>
+                  <label htmlFor="medicine">Nome do Medicamento</label>
+                  <input
+                    type="text"
+                    name="medicine"
+                    id="medicine"
+                    placeholder="Aspirina"
+                    className="border border-green-primary rounded-md shadow-md p-2 w-full"
+                    value={medicine}
+                    onChange={(e) => setMedicine(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="price">Preço R$:</label>
+                  <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    placeholder="Preço: R$"
+                    className="border border-green-primary rounded-md shadow-md p-2 w-full"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
+
+                <input
+                  type="submit"
+                  value="Calcular Promoção"
+                  className="bg-green-primary rounded-md text-white font-bold p-4 cursor-pointer hover:bg-green-hover transition-all duration-300 mt-4"
+                />
+
+                {showResults && (
+                  <div>
+                    <h3 id="medicineResult">
+                      Promoção de <span className="font-bold">{medicine}!</span>
+                    </h3>
+                    <h3 id="priceResult">
+                      Leve 2 por apenas:{" "}
+                      <span className="font-bold text-green-800">
+                        {promotionResult}
+                      </span>
+                    </h3>
+                  </div>
+                )}
+              </div>
+            </form>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-pharmacy-bg flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-lg w-96 max-w-md">
+                <Header />
+                <Promotion />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
