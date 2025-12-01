@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-bt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Airport Lan House</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa para uma lan house de um aeroporto – O programa deve ler o valor de cada 15 minutos de uso de um computador e o tempo de uso por um cliente em minutos. Informe o valor a ser pago pelo cliente, sabendo que as frações extras de 15 minutos devem ser cobradas de forma integral.
+  -->
+  <body>
+    <h1>Airport Lan House</h1>
+
+    <form>
+      <label for="useValue">Valor por 15min de Uso R$:</label>
+      <input type="text" name="useValue" id="useValue" placeholder="R$" /><br />
+
+      <label for="clientValue">Tempo de Uso do Cliente:</label>
+      <input
+        type="text"
+        name="clientValue"
+        id="clientValue"
+        placeholder="min"
+      /><br />
+
+      <input type="submit" value="Calcular Valor a Pagar" />
+
+      <h3 id="result"></h3>
+    </form>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      function convertToNumber(value) {
+        value = value.trim();
+
+        value = value.replace(",", ".");
+
+        return Number(value);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const useValue = convertToNumber(form.useValue.value);
+        const useClient = convertToNumber(form.clientValue.value);
+
+        const timeBlock = Math.ceil(useClient / 15);
+        const resultValue = timeBlock * useValue;
+
+        function format(price) {
+          return price.toFixed(2).replace(".", ",");
+        }
+
+        result.innerText = `Valor a Pagar R$${format(resultValue)}`;
+      });
+    </script>
+  </body>
+</html>
