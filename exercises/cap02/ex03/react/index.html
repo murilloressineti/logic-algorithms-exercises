@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supermercado JS</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-supermarket-bg: #c7edee;
+
+        --color-button-primary: #17b279;
+        --color-button-hover: #08774d;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Um supermercado está com uma promoção – Para aumentar suas vendas no setor de higiene, cada etiqueta de produto deve exibir uma mensagem anunciando 50% de desconto (para um item) na compra de três unidades do produto. Elaborar um programa que leia descrição e preço de um produto. Após, apresente as mensagens indicando a promoção
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col pt-8">
+              <span className="text-5xl">🛒</span>
+              <h1 className="text-2xl font-bold text-blue-950">
+                Supermercado JS
+              </h1>
+              <div className="w-1/2 h-0.5 bg-blue-primary mt-2"></div>
+            </div>
+          );
+        }
+
+        function Promotion() {
+          return (
+            <div className="p-8">
+              <form className="flex flex-col item gap-4">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="product" className="font-bold text-gray-600">
+                    Produto
+                  </label>
+                  <input
+                    type="text"
+                    name="product"
+                    id="product"
+                    className="border border-blue-400 rounded-xl"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label htmlFor="price" className="font-bold text-gray-600">
+                    Preço R$:
+                  </label>
+                  <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    className="border border-blue-400 rounded-xl"
+                  />
+                </div>
+
+                <div className="flex items-center justify-center mt-4">
+                  <input
+                    type="submit"
+                    value="Ver Promoção"
+                    className="w-1/2 p-2 bg-button-primary text-white font-bold rounded-xl cursor-pointer hover:bg-button-hover transition-all duration-300"
+                  />
+                </div>
+              </form>
+
+              <div className="">
+                <p id="result">
+                  Nome do Produto - Promoção: Leve 3 por R$ <br/>
+                  O 3º produto custa apenas R$
+                </p>
+              </div>
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-supermarket-bg flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-lg w-96 max-w-md">
+                <Header />
+                <Promotion />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
