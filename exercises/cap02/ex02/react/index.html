@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Airport Lan House</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-airport-bg: #dbdbdb;
+
+        --color-blue-primary: #2590de;
+        --color-blue-hover: #1b76b7;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa para uma lan house de um aeroporto – O programa deve ler o valor de cada 15 minutos de uso de um computador e o tempo de uso por um cliente em minutos. Informe o valor a ser pago pelo cliente, sabendo que as frações extras de 15 minutos devem ser cobradas de forma integral.
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col pt-8">
+              <span className="text-5xl">🛫</span>
+              <h1 className="text-2xl font-bold">Airport Lan House</h1>
+              <div className="w-1/2 h-0.5 bg-blue-primary mt-2"></div>
+            </div>
+          );
+        }
+
+        function Calculation() {
+          const [useValue, setUseValue] = React.useState("");
+          const [clientValue, setClientValue] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
+
+          function convertToNumber(value) {
+            value = value.trim();
+            value = value.replace(",", ".");
+
+            return Number(value);
+          }
+
+          function convertBRL(value) {
+            return new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(value.toFixed(2));
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const useValueForm = convertToNumber(useValue);
+
+            const timeBlock = Math.ceil(clientValue / 15);
+            const resultValue = timeBlock * useValue;
+
+            setResult(convertBRL(resultValue));
+            setShowResults(true);
+          }
+
+          return (
+            <div className="p-8">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="useValue" className="font-bold text-gray-800">
+                    Valor por 15min de Uso (R$):
+                  </label>
+                  <input
+                    type="text"
+                    name="useValue"
+                    id="useValue"
+                    className="p-1.5 w-20 border border-blue-300 rounded-lg bg-blue-50 shadow-inner focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={useValue}
+                    onChange={(e) => setUseValue(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="clientValue"
+                    className="font-bold text-gray-800"
+                  >
+                    Tempo de Uso do Cliente (min):
+                  </label>
+                  <input
+                    type="text"
+                    name="clientValue"
+                    id="clientValue"
+                    className="p-1.5 w-20 border border-blue-300 rounded-lg bg-blue-50 shadow-inner focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={clientValue}
+                    onChange={(e) => setClientValue(e.target.value)}
+                  />
+                </div>
+
+                <input
+                  type="submit"
+                  value="Calcular Valor a Pagar"
+                  className="p-2 w-full bg-blue-primary rounded-md text-white font-bold hover:bg-blue-hover transition-all duration-300 cursor-pointer"
+                />
+              </form>
+
+              {showResults && (
+                <h3
+                  id="result"
+                  className="mt-5 text-center text-green-600 font-bold"
+                >
+                  Valor a Pagar {result}
+                </h3>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-airport-bg flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-lg w-96 max-w-md">
+                <Header />
+                <Calculation />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
