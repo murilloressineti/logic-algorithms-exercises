@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supermercado JS</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Um supermercado está com uma promoção – Para aumentar suas vendas no setor de higiene, cada etiqueta de produto deve exibir uma mensagem anunciando 50% de desconto (para um item) na compra de três unidades do produto. Elaborar um programa que leia descrição e preço de um produto. Após, apresente as mensagens indicando a promoção
+  -->
+  <body>
+    <h1>Supermercado JS</h1>
+
+    <form>
+      <label for="product">Produto</label>
+      <input type="text" name="product" id="product" /> <br />
+
+      <label for="price">Preço R$:</label>
+      <input type="text" name="price" id="price" /><br />
+
+      <input type="submit" value="Ver Promoção" />
+    </form>
+
+    <h3 id="resultPromotion"></h3>
+    <h3 id="resultThirdProduct"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const resultPromotion = document.getElementById("resultPromotion");
+      const resultThirdProduct = document.getElementById("resultThirdProduct");
+
+      function convertToNumber(value) {
+        value = value.trim();
+        value = value.replace(",", ".");
+        return Number(value);
+      }
+
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const product = capitalizeFirstLetter(form.product.value);
+        const price = convertToNumber(form.price.value);
+
+        if (product == "" || price == "") {
+          alert("Por favor, preencha todos os campos.");
+          return;
+        }
+
+        if (isNaN(price) || price <= 0) {
+          alert("Digite um valor válido.");
+          return;
+        }
+
+        const promotion = price * 3 - price / 2;
+
+        function format(price) {
+          return price.toFixed(2).replace(".", ",");
+        }
+
+        resultPromotion.innerText = `${product} - Promoção: Leve 3 por R$${format(
+          promotion
+        )}`;
+        resultThirdProduct.innerText = `O 3º produto custa apenas R$${format(
+          price / 2
+        )}`;
+      });
+    </script>
+  </body>
+</html>
