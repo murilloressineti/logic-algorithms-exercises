@@ -39,9 +39,56 @@
         }
 
         function Promotion() {
+          const [productValue, setProductValue] = React.useState("");
+          const [price, setPrice] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
+
+          function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+          }
+
+          function convertToNumber(value) {
+            value = value.trim();
+            value = value.replace(",", ".");
+
+            return Number(value);
+          }
+
+          function convertBRL(value) {
+            return new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(value.toFixed(2));
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const priceValue = convertToNumber(price);
+
+            if (productValue == "" || priceValue == "") {
+              alert("Por favor, preencha todos os campos.");
+              return;
+            }
+
+            if (isNaN(priceValue) || priceValue <= 0) {
+              alert("Digite um valor válido.");
+              return;
+            }
+
+            const promotion = priceValue * 3 - priceValue / 2;
+
+            setResult(convertBRL(promotion));
+            setShowResults(true);
+          }
+
           return (
             <div className="p-8">
-              <form className="flex flex-col item gap-4">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col item gap-4"
+              >
                 <div className="flex items-center justify-between">
                   <label htmlFor="product" className="font-bold text-gray-600">
                     Produto
@@ -50,7 +97,12 @@
                     type="text"
                     name="product"
                     id="product"
-                    className="border border-blue-400 rounded-xl"
+                    className="border border-blue-400 rounded-xl p-1"
+                    value={productValue}
+                    onChange={(e) => {
+                      setProductValue(e.target.value);
+                      setShowResults(false);
+                    }}
                   />
                 </div>
 
@@ -62,7 +114,12 @@
                     type="text"
                     name="price"
                     id="price"
-                    className="border border-blue-400 rounded-xl"
+                    className="border border-blue-400 rounded-xl p-1"
+                    value={price}
+                    onChange={(e) => {
+                      setPrice(e.target.value);
+                      setShowResults(false);
+                    }}
                   />
                 </div>
 
@@ -75,12 +132,21 @@
                 </div>
               </form>
 
-              <div className="">
-                <p id="result">
-                  Nome do Produto - Promoção: Leve 3 por R$ <br/>
-                  O 3º produto custa apenas R$
-                </p>
-              </div>
+              {showResults && (
+                <div
+                  className="mt-8 flex flex-col items-center gap-2 text-center"
+                  id="result"
+                >
+                  <p className="text-red-700 font-bold">
+                    {capitalizeFirstLetter(productValue)} - Promoção: Leve 3 por{" "}
+                    <strong>{result}</strong>
+                  </p>
+                  <p className="text-blue-800 text-sm">
+                    O 3º produto custa apenas{" "}
+                    <strong>{convertBRL(convertToNumber(price) / 2)}</strong>
+                  </p>
+                </div>
+              )}
             </div>
           );
         }
