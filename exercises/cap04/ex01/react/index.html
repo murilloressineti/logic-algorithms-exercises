@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Par ou Ímpar</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-even-odd-bg-primary: #a3c4e5;
+        --color-card: #cadfe4;
+
+        --color-result: #3dc08e;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia um número. Informe se ele é par ou ímpar. Faça com o if... else... tradicional e, após, tente criar a condição com o operador ternário.
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col gap-4">
+              <span className="text-5xl">🧮</span>
+              <h1 className="text-2xl font-bold uppercase">
+                Programa par ou ímpar
+              </h1>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [number, setNumber] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [showResults, setShowResults] = React.useState(false);
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            if (isNaN(number) || number == "") {
+              alert("Por favor, digite um valor válido.");
+              setNumber("");
+              return;
+            }
+
+            if (number % 2 === 0) {
+              setResult(`${number} é par!`);
+            } else {
+              setResult(`${number} é ímpar!`);
+            }
+
+            setShowResults(true);
+          }
+
+          return (
+            <div className="bg-card rounded-xl shadow-lg w-96 max-w-md p-4">
+              <form onSubmit={handleSubmit} className="flex flex-col">
+                <label
+                  htmlFor="number"
+                  className="text-gray-600 font-semibold mb-4"
+                >
+                  Número
+                </label>
+                <input
+                  type="text"
+                  name="number"
+                  id="number"
+                  className="bg-white rounded-full px-4 py-1 text-gray-800 text-2xl"
+                  value={number}
+                  onChange={(e) => {
+                    setNumber(e.target.value);
+                    setShowResults(false);
+                  }}
+                />
+
+                <input
+                  type="submit"
+                  value="Verificar se é Par ou Ímpar"
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 cursor-pointer text-white uppercase font-semibold rounded-full transition-all duration-300 p-2 mt-4 hover:from-blue-600 hover:to-purple-600 
+    hover:shadow-lg hover:shadow-purple-500/50"
+                />
+              </form>
+
+              {showResults && (
+                <div className="flex items-center justify-center">
+                  <h3
+                    id="result"
+                    className="w-1/2 text-center bg-result text-white uppercase font-semibold rounded-full p-2 mt-8"
+                  >
+                    {result}
+                  </h3>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-even-odd-bg-primary flex flex-col items-center justify-center gap-6">
+              <Header />
+              <Card />
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
