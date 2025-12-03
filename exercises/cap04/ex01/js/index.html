@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia um número. Informe se ele é par ou ímpar. Faça com o if... else... tradicional e, após, tente criar a condição com o operador ternário.
+  -->
+  <body>
+    <h1>Programa Par ou Ímpar</h1>
+
+    <form>
+      <label for="number">Número</label>
+      <input type="number" name="number" id="number" />
+
+      <input type="submit" value="Verificar se é Par ou Ímpar" />
+    </form>
+
+    <h3 id="result"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const number = form.number.value;
+
+        if (number % 2 === 0) {
+          result.innerText = `${number} é par!`;
+        } else {
+          result.innerText = `${number} é ímpar!`;
+        }
+      });
+    </script>
+  </body>
+</html>
