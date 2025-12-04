@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Limite de Velocidade</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #a3c4e5;
+        --color-card: #cadfe4;
+
+        --color-button: #1d77c2;
+        --color-button-hover: #135b96;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia a velocidade permitida em uma estrada e a velocidade de um condutor. Se a velocidade for inferior ou igual à permitida, exiba "Sem Multa". Se a velocidade for de até 20% maior que a permitida, exiba "Multa Leve". E, se a velocidade for superior a 20% da velocidade permitida, exiba "Multa Grave"
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex flex-col items-center justify-center p-4">
+              <span className="text-5xl mb-4">🚗💨</span>
+              <h1 className="text-2xl font-semibold text-center">
+                Verificação de Velocidade e Multa
+              </h1>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [allowedValue, setAllowedValue] = React.useState("");
+          const [driverValue, setDriverValue] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [resultColor, setResultColor] = React.useState("bg-gray-300");
+          const [showResult, setShowResult] = React.useState(false);
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            if (driverValue == "" || allowedValue == "") {
+              alert("Por favor, digite um valor válido.");
+              return;
+            }
+
+            if (driverValue <= allowedValue) {
+              setResult(`Sem multa ✅`);
+              setResultColor("bg-green-200");
+            } else if (driverValue <= allowedValue * 0.2 + allowedValue) {
+              setResult(`Multa leve ⚠️`);
+              setResultColor("bg-yellow-200");
+            } else {
+              setResult(`Multa grave ⛔`);
+              setResultColor("bg-red-300");
+            }
+
+            setShowResult(true);
+          }
+
+          return (
+            <div className="p-4 ">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className=" flex gap-2 justify-between items-center">
+                  <label htmlFor="allowed">Velocidade Permitida (hm/h):</label>
+                  <input
+                    type="number"
+                    min="10"
+                    name="allowed"
+                    id="allowed"
+                    className="border border-blue-400 rounded-xl py-1 px-2"
+                    value={allowedValue}
+                    onChange={(e) => {
+                      setAllowedValue(Number(e.target.value));
+                      setShowResult(false);
+                    }}
+                  />
+                </div>
+
+                <div className=" flex gap-2 justify-between items-center">
+                  <label htmlFor="driver">Velocidade do Condutor (hm/h):</label>
+                  <input
+                    type="number"
+                    min="1"
+                    name="driver"
+                    id="driver"
+                    className="border border-blue-400 rounded-xl py-1 px-2"
+                    value={driverValue}
+                    onChange={(e) => {
+                      setDriverValue(Number(e.target.value));
+                      setShowResult(false);
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <input
+                    type="submit"
+                    value="Verificar Velocidade"
+                    className="bg-button text-white p-2 px-4 rounded-lg font-semibold cursor-pointer hover:bg-button-hover transition-all duration-300 mt-4 mb-8"
+                  />
+                </div>
+              </form>
+
+              {showResult && (
+                <div
+                  id="result"
+                  className={`text-center ${resultColor} p-2 rounded-md font-semibold`}
+                >
+                  {result}
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen bg-primary flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-lg w-124">
+                <Header />
+                <Card />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
