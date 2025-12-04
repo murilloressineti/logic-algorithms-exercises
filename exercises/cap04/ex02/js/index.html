@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Limite de Velocidade</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia a velocidade permitida em uma estrada e a velocidade de um condutor. Se a velocidade for inferior ou igual à permitida, exiba "Sem Multa". Se a velocidade for de até 20% maior que a permitida, exiba "Multa Leve". E, se a velocidade for superior a 20% da velocidade permitida, exiba "Multa Grave"
+  -->
+  <body>
+    <h1>Programa Verifica Velocidade</h1>
+
+    <form>
+      <label for="allowed">Velocidade Permitida:</label>
+      <input type="number" name="allowed" id="allowed" /> <br />
+
+      <label for="driver">Velocidade do Condutor:</label>
+      <input type="number" name="driver" id="driver" /> <br />
+
+      <input type="submit" value="Verificar Velocidade" />
+    </form>
+
+    <h3 id="result"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const allowedSpeed = Number(form.allowed.value);
+        const driverSpeed = Number(form.driver.value);
+
+        if (driverSpeed <= allowedSpeed) {
+          result.innerHTML = `Sem multa✅`;
+        } else if (driverSpeed <= allowedSpeed * 0.2 + allowedSpeed) {
+          result.innerHTML = `Multa leve⚠️`;
+        } else {
+          result.innerHTML = `Multa grave⛔`;
+        }
+      });
+    </script>
+  </body>
+</html>
