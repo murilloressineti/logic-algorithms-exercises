@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triângulo</title>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia três lados e verifique se eles podem ou não formar um triângulo. Para formar um triângulo, um dos lados não pode ser maior que a soma dos outros dois. Caso possam formar um triângulo, exiba também qual o tipo do triângulo: Equilátero (3 lados iguais), Isósceles (2 lados iguais) e Escaleno (3 lados diferentes).
+  -->
+  <body>
+    <h1>Programa Lados de um Triângulo</h1>
+
+    <form>
+      <label for="sideA">Lado A:</label>
+      <input type="text" name="sideA" id="sideA" /> <br />
+
+      <label for="sideB">Lado B:</label>
+      <input type="text" name="sideB" id="sideB" /><br />
+
+      <label for="sideC">Lado C:</label>
+      <input type="text" name="sideC" id="sideC" /><br />
+
+      <input type="submit" value="Verificar Lados" />
+    </form>
+
+    <h3 id="result"></h3>
+    <h3 id="types"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+      const types = document.getElementById("types");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const sideA = Number(form.sideA.value);
+        const sideB = Number(form.sideB.value);
+        const sideC = Number(form.sideC.value);
+
+        if (
+          sideA <= 0 ||
+          sideB <= 0 ||
+          sideC <= 0 ||
+          isNaN(sideA) ||
+          isNaN(sideB) ||
+          isNaN(sideC)
+        ) {
+          alert("Digite um valor válido");
+          return;
+        }
+
+        if (
+          sideA >= sideB + sideC ||
+          sideB >= sideA + sideC ||
+          sideC >= sideA + sideB
+        ) {
+          result.innerHTML = `Lados não podem formar um triângulo.`;
+          types.innerHTML = "";
+        } else {
+          result.innerHTML = `Lados podem formar um triângulo.`;
+
+          if (sideA == sideB && sideB == sideC) {
+            types.innerHTML = `Equilátero`;
+          } else if (sideA == sideB || sideA == sideC || sideB == sideC) {
+            types.innerHTML = `Isósceles`;
+          } else if (sideA != sideB && sideA != sideC && sideB != sideC) {
+            types.innerHTML = `Escaleno`;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
