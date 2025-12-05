@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triângulo</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #cbdcf7;
+        --color-card: #f2f6f9;
+        --color-result: #78bf85;
+
+        --color-button: #1d77c2;
+        --color-button-hover: #135b96;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia três lados e verifique se eles podem ou não formar um triângulo. Para formar um triângulo, um dos lados não pode ser maior que a soma dos outros dois. Caso possam formar um triângulo, exiba também qual o tipo do triângulo: Equilátero (3 lados iguais), Isósceles (2 lados iguais) e Escaleno (3 lados diferentes).
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex flex-col items-center justify-center p-4">
+              <h1 className="text-2xl font-semibold text-center text-blue-950">
+                Verificador de Triângulos
+              </h1>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [sideAValue, setSideAValue] = React.useState("");
+          const [sideBValue, setSideBValue] = React.useState("");
+          const [sideCValue, setSideCValue] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [resultColor, setResultColor] = React.useState("");
+          const [showResult, setShowResult] = React.useState(false);
+
+          function convertToNumber(value) {
+            value = value.trim();
+            value = value.replace(",", ".");
+            return Number(value);
+          }
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const sideA = convertToNumber(sideAValue);
+            const sideB = convertToNumber(sideBValue);
+            const sideC = convertToNumber(sideCValue);
+
+            if (
+              sideA <= 0 ||
+              sideB <= 0 ||
+              sideC <= 0 ||
+              isNaN(sideA) ||
+              isNaN(sideB) ||
+              isNaN(sideC)
+            ) {
+              alert("Digite um valor válido");
+              return;
+            }
+
+            if (
+              sideA >= sideB + sideC ||
+              sideB >= sideA + sideC ||
+              sideC >= sideA + sideB
+            ) {
+              setResult(`Lados não podem formar um triângulo.`);
+              setResultColor("bg-red-500 border-red-800");
+            } else {
+              setResultColor("bg-result border-green-700");
+              if (sideA == sideB && sideB == sideC) {
+                setResult(
+                  `Os lados formam um triângulo do tipo ${"Equilátero".toUpperCase()}`
+                );
+              } else if (sideA == sideB || sideA == sideC || sideB == sideC) {
+                setResult(
+                  `Os lados formam um triângulo do tipo ${"Isósceles".toUpperCase()}`
+                );
+              } else if (sideA != sideB && sideA != sideC && sideB != sideC) {
+                setResult(
+                  `Os lados formam um triângulo do tipo ${"Escaleno".toUpperCase()}`
+                );
+              }
+            }
+
+            setShowResult(true);
+          }
+
+          return (
+            <div className="p-6">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <label
+                    htmlFor="sideA"
+                    className="text-gray-600 font-semibold w-20"
+                  >
+                    Lado A:
+                  </label>
+                  <input
+                    type="text"
+                    name="sideA"
+                    id="sideA"
+                    className="p-1 border border-gray-400 rounded-md bg-white w-full"
+                    value={sideAValue}
+                    onChange={(e) => {
+                      setSideAValue(e.target.value);
+                      setShowResult(false);
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label
+                    htmlFor="sideB"
+                    className="text-gray-600 font-semibold w-20"
+                  >
+                    Lado B:
+                  </label>
+                  <input
+                    type="text"
+                    name="sideB"
+                    id="sideB"
+                    className="p-1 border border-gray-400 rounded-md bg-white w-full"
+                    value={sideBValue}
+                    onChange={(e) => {
+                      setSideBValue(e.target.value);
+                      setShowResult(false);
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label
+                    htmlFor="sideC"
+                    className="text-gray-600 font-semibold w-20"
+                  >
+                    Lado C:
+                  </label>
+                  <input
+                    type="text"
+                    name="sideC"
+                    id="sideC"
+                    className="p-1 border border-gray-400 rounded-md bg-white w-full"
+                    value={sideCValue}
+                    onChange={(e) => {
+                      setSideCValue(e.target.value);
+                      setShowResult(false);
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center justify-center ">
+                  <input
+                    type="submit"
+                    value="Verificar"
+                    className="bg-button uppercase p-2 font-semibold text-white cursor-pointer rounded-lg hover:bg-button-hover transition-all duration-300 mt-8 px-8"
+                  />
+                </div>
+              </form>
+
+              {showResult && (
+                <div
+                  className={`${resultColor} mt-8 p-2 border-2 text-white text-center font-semibold rounded-md`}
+                >
+                  <p>{result}</p>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen flex items-center justify-center bg-primary">
+              <div className="bg-card rounded-2xl shadow-lg w-96">
+                <Header />
+                <Card />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
