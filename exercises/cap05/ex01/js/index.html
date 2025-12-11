@@ -23,5 +23,28 @@
     </form>
 
     <h3 id="result"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const fruit = form.fruit.value;
+        const number = form.number.value;
+
+        let response = "";
+        for (let i = 0; i < number; i++) {
+          if (i == number - 1) {
+            response = `${response}${fruit}`;
+          } else {
+            response = `${response}${fruit}***`;
+          }
+        }
+
+        result.innerText = response;
+      });
+    </script>
   </body>
 </html>
