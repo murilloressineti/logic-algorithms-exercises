@@ -7,7 +7,7 @@
   </head>
   <!--
     Enunciado do exercício:
-    Elaborar um programa que leia um número e verifique se ele é ou não perfeito. Um número dito perfeito é aquele que é igual à soma dos seus divisores inteiros (exceto o próprio número). O programa deve exibir os divisores do número e a soma deles. A Figura 5.17 exibe a página do programa com um exemplo de número perfeito.
+    Elaborar um programa que leia um número e verifique se ele é ou não perfeito. Um número dito perfeito é aquele que é igual à soma dos seus divisores inteiros (exceto o próprio número). O programa deve exibir os divisores do número e a soma deles.
   -->
   <body>
     <h1>Programa Números Perfeitos</h1>
@@ -19,6 +19,45 @@
       <input type="submit" value="Verificar Se É Perfeito" />
     </form>
 
-    <h3 id="result"></h3>
+    <h3 id="resultA"></h3>
+    <h3 id="resultB"></h3>
+
+    <script>
+      const form = document.querySelector("form");
+      const resultA = document.getElementById("resultA");
+      const resultB = document.getElementById("resultB");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const number = Number(form.number.value);
+
+        if (isNaN(number) || number < 0) {
+          alert("Digite um valor válido");
+          form.number.value = "";
+          form.number.focus();
+          return;
+        }
+
+        let sum = 0;
+        let result = "";
+        for (let i = 1; i < number; i++) {
+          if (number % i == 0) {
+            sum += i;
+            result += `${i},`;
+          }
+        }
+
+        result = result.slice(0, -1);
+
+        if (sum == number) {
+          resultB.innerText = `${number} É um número perfeito.`;
+        } else {
+          resultB.innerText = `${number} Não é um número perfeito.`;
+        }
+
+        resultA.innerText = `Divisores do ${number}: ${result} (Soma: ${sum})`;
+      });
+    </script>
   </body>
 </html>
