@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Repete Fruta</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #cbdcf7;
+        --color-card: #f2f6f9;
+
+        --color-button: #1d77c2;
+        --color-button-hover: #135b96;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia o nome de uma fruta e um número. O programa deve repetir a exibição do nome da fruta, de acordo com o número informado. Utilize o *** para separar os nomes.
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex items-center justify-center flex-col gap-2 mt-4">
+              <h1 className="text-2xl font-bold uppercase text-blue-400">
+                Programa Repete Fruta
+              </h1>
+              <span className="text-2xl">🍎🍍🍒🫐🍌</span>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [fruitValue, setFruitValue] = React.useState("");
+          const [numberValue, setNumberValue] = React.useState("");
+          const [result, setResult] = React.useState("");
+          const [showResult, setShowResult] = React.useState(false);
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            if (fruitValue.trim() == "") {
+              alert("Digite um valor válido");
+              setFruitValue("");
+              return;
+            }
+
+            if (isNaN(numberValue) || numberValue <= 0) {
+              alert("Digite um valor válido");
+              setNumberValue("");
+              return;
+            }
+
+            let response = "";
+            for (let i = 0; i < numberValue; i++) {
+              if (i == numberValue - 1) {
+                response = `${response}${fruitValue}`;
+              } else {
+                response = `${response}${fruitValue}***`;
+              }
+            }
+            setFruitValue("");
+            setNumberValue("");
+
+            setResult(response);
+            setShowResult(true);
+          }
+
+          return (
+            <div className="flex flex-col p-8">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  <label htmlFor="fruit" className="font-semibold">
+                    Fruta:
+                  </label>
+                  <input
+                    type="text"
+                    name="fruit"
+                    id="fruit"
+                    className="border border-gray-600 rounded-md w-full p-1"
+                    placeholder="Maça"
+                    value={fruitValue}
+                    onChange={(e) => setFruitValue(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <label htmlFor="number" className="font-semibold">
+                    Número:
+                  </label>
+                  <input
+                    type="number"
+                    name="number"
+                    id="number"
+                    className="border border-gray-600 rounded-md w-full p-1"
+                    placeholder="5"
+                    value={numberValue}
+                    onChange={(e) => setNumberValue(e.target.value)}
+                  />
+                </div>
+
+                <input
+                  type="submit"
+                  value="Repetir Fruta"
+                  className="bg-button text-white p-2 rounded-lg uppercase font-semibold text-sm cursor-pointer hover:bg-button-hover transition-all duration-300 mb-4"
+                />
+              </form>
+
+              {showResult && (
+                <div
+                  id="result"
+                  className="flex items-start justify-center text-center font-semibold bg-green-200 rounded-md p-2 mt-6 break-all"
+                >
+                  {result}
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen flex items-center justify-center bg-primary">
+              <div className="bg-card rounded-lg shadow-lg w-96">
+                <Header />
+                <Card />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
