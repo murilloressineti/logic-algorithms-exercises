@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Criação de Chinchilas</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #ffefe2;
+        --color-card: #f2f6f9;
+
+        --color-button: #ffbb6c;
+        --color-button-hover: #ed944d;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Digamos que o número de chinchilas de uma fazenda triplica a cada ano, após o primeiro ano. Elaborar um programa que leia o número inicial de chinchilas e anos e informe ano a ano o número médio previsto de chinchilas da fazenda. O número inicial de chinchilas deve ser maior ou igual a 2 (um casal).
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="flex flex-col items-center justify-center gap-4">
+              <h1 className="text-2xl uppercase text-center font-bold text-gray-700">
+                Programa Criação de Chinchilas
+              </h1>
+              <span className="text-5xl">🐹🐹🐹</span>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [chinchilas, setChinchilas] = React.useState("");
+          const [years, setYears] = React.useState("");
+          const [result, setResult] = React.useState("");
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            let chinchilasValue = Number(chinchilas);
+            const yearsValue = Number(years);
+
+            if (isNaN(chinchilasValue) || chinchilasValue < 2) {
+              return alert("O número mínimo de chinchilas é 2 (um casal).");
+            }
+
+            if (isNaN(yearsValue) || yearsValue < 1) {
+              return alert("Informe um número de anos válido.");
+            }
+
+            let response = "";
+            for (let i = 1; i <= yearsValue; i++) {
+              response += `${i}º Ano: ${chinchilasValue} Chinchilas\n`;
+
+              chinchilasValue *= 3;
+            }
+
+            setChinchilas("");
+            setYears("");
+
+            setResult(response);
+          }
+
+          return (
+            <div className="flex flex-col">
+              <form
+                onSubmit={handleSubmit}
+                className="mt-8 flex flex-col gap-4"
+              >
+                <div className="flex justify-between items-center gap-4">
+                  <label htmlFor="chinchilas" className="">
+                    Nº Chinchilas:
+                  </label>
+                  <input
+                    type="number"
+                    name="chinchilas"
+                    id="chinchilas"
+                    className="border border-gray-600 rounded-md p-1 flex-1"
+                    value={chinchilas}
+                    onChange={(e) => setChinchilas(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex justify-between items-center gap-4">
+                  <label htmlFor="years">Nº Anos:</label>
+                  <input
+                    type="number"
+                    name="years"
+                    id="years"
+                    className="border border-gray-600 rounded-md p-1 flex-1"
+                    value={years}
+                    onChange={(e) => setYears(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="bg-button p-2 rounded-full cursor-pointer transition-all duration-300 hover:bg-button-hover uppercase font-semibold mt-4"
+                >
+                  Mostrar Previsão de Chinchilas
+                </button>
+              </form>
+
+              {result && (
+                <pre className="mt-8 whitespace-pre-wrap bg-white p-4 rounded-md border text-gray-700">
+                  {result}
+                </pre>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen flex items-center justify-center bg-primary">
+              <div className="bg-card rounded-lg w-128 p-8">
+                <Header />
+                <Card />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
