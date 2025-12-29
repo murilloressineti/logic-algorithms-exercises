@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercises</title>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-primary: #819baf;
+        --color-card: #dfe6ec;
+        --color-header: #27354f;
+
+        --color-button: #ffbb6c;
+        --color-button-hover: #ed944d;
+      }
+    </style>
+  </head>
+  <!--
+    Enunciado do exercício:
+    Elaborar um programa que leia um número e verifique se ele é ou não perfeito. Um número dito perfeito é aquele que é igual à soma dos seus divisores inteiros (exceto o próprio número). O programa deve exibir os divisores do número e a soma deles.
+  -->
+  <body>
+    <div id="root">
+      <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+      <script type="text/babel">
+        function Header() {
+          return (
+            <div className="bg-header text-white flex rounded-t-3xl p-4 justify-between">
+              <div className="flex gap-2 items-center">
+                <span className="text-3xl">🔢</span>
+                <h1 className="font-semibold uppercase">Números Perfeitos</h1>
+              </div>
+
+              <div className="flex gap-4 items-center">
+                <span className="text-2xl">👤</span>
+                <span className="text-2xl">≡</span>
+              </div>
+            </div>
+          );
+        }
+
+        function Card() {
+          const [number, setNumber] = React.useState("");
+          const [result, setResult] = React.useState(false);
+          const [resultA, setResultA] = React.useState("");
+          const [resultB, setResultB] = React.useState("");
+
+          function handleSubmit(e) {
+            e.preventDefault();
+
+            const numberValue = Number(number);
+
+            if (isNaN(numberValue) || numberValue < 0) {
+              alert("Digite um valor válido");
+              setNumber("");
+              return;
+            }
+
+            let sum = 0;
+            let response = "";
+            for (let i = 1; i < numberValue; i++) {
+              if (numberValue % i == 0) {
+                sum += i;
+                response += `${i},`;
+              }
+            }
+
+            response = response.slice(0, -1);
+
+            if (sum == numberValue) {
+              setResultB(`${numberValue} É um número perfeito.`);
+            } else {
+              setResultB(`${numberValue} Não é um número perfeito.`);
+            }
+
+            setResultA(
+              `Divisores do ${numberValue}: ${response} (Soma: ${sum})`
+            );
+
+            setNumber("");
+            setResult(true);
+          }
+
+          return (
+            <div className="p-4">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-4 items-center mt-4"
+              >
+                <div className="flex gap-2 items-center">
+                  <label htmlFor="number">Número:</label>
+                  <input
+                    type="number"
+                    name="number"
+                    id="number"
+                    className="bg-white rounded-md border border-gray-400 p-2"
+                    value={number}
+                    onChange={(e) => setNumber(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-8 rounded-xl shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                >
+                  Verificar Se É Perfeito
+                </button>
+              </form>
+
+              {result && (
+                <div className="flex flex-col items-center p-4 mt-6 gap-2 text-blue-950 text-lg">
+                  <p>{resultA}</p>
+                  <p>{resultB}</p>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function App() {
+          return (
+            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-teal-100 to-purple-100">
+              <div className="bg-card rounded-2xl w-98">
+                <Header />
+                <Card />
+              </div>
+            </main>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      </script>
+    </div>
+  </body>
+</html>
