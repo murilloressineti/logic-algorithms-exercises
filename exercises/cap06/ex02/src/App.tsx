@@ -11,7 +11,7 @@ import "./styles.css";
 function Header() {
   return (
     <div>
-      <h1>Programa Nümeros em Ordem</h1>
+      <h1>Programa Números em Ordem</h1>
     </div>
   );
 }
@@ -20,6 +20,7 @@ const DEFAULT_NUMBERS: number[] = [];
 
 function Card() {
   const [numberValue, setNumberValue] = useState(DEFAULT_NUMBERS);
+  const [result, setResult] = useState(false);
   const [message, setMessage] = useState("");
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -40,7 +41,7 @@ function Card() {
       return;
     }
 
-    //4.2 Impede a incllusão de números repetidos.
+    //4.2 Impede a inclusão de números repetidos.
     if (numberValue.includes(newNumber)) {
       alert("Este número já foi adicionado!");
       return;
@@ -53,7 +54,29 @@ function Card() {
     event.currentTarget.reset();
   }
 
-  console.log(numberValue)
+  function checkOrder() {
+    // Validação para verificar 2 números ou mais.
+    if(numberValue.length < 2 ) {
+      alert("Deve ter pelo menos 2 números para verificar a ordem.")
+    }
+
+    let orderOk = true
+    for (let i = 0; i < numberValue.length - 1; i++) {
+      // Se o elemento na posição i for MAIOR que o elemento na posição i + 1
+      if(numberValue[i] > numberValue[i + 1]) {
+        orderOk = false
+        break
+      }
+    }
+
+    if (orderOk) {
+      setMessage("Os números estão em ordem crescente!")
+    } else {
+      setMessage("Atenção... Números não estão em ordem crescente.")
+    }
+    
+    setResult(true);
+  }
 
   return (
     <div>
@@ -63,18 +86,21 @@ function Card() {
         <button type="submit">Adicionar</button>
       </form>
 
-      <button type="button">Verificar Ordem</button>
-    </div>
-  );
-}
+      <button type="button" onClick={checkOrder}>
+        Verificar Ordem
+      </button>
 
-function Result() {
-  return (
-    <div>
-      <h3>Números: 4, 10, 15, 12, 24</h3>
-      <h4>
-        <i>Atenção... Números não estão em ordem crescente.</i>
-      </h4>
+      <div>
+        <h3>Números: {numberValue.join(", ")}</h3>
+      </div>
+
+      {result && (
+        <div>
+          <h4>
+            <i>{message}</i>
+          </h4>
+        </div>
+      )}
     </div>
   );
 }
@@ -84,7 +110,6 @@ export default function App() {
     <main>
       <Header />
       <Card />
-      <Result />
     </main>
   );
 }
