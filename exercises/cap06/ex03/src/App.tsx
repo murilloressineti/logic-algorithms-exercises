@@ -18,10 +18,15 @@ function Header() {
   );
 }
 
-const DEFAULT_CANDIDATES: string[] = [];
-
 function Card() {
-  const [candidates, setCandidatees] = useState<{name: string; hits: number}[]>([]);
+  const [candidates, setCandidatees] = useState<
+    { name: string; hits: number }[]
+  >([]);
+  const [showList, setShowList] = useState(false);
+  const [approvedCandidates, setApprovedCandidates] = useState<
+    { name: string; hits: number }[]
+  >([]);
+  const [approved, setApproved] = useState(false);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // 1. Impede o recarregamento da página
@@ -29,10 +34,11 @@ function Card() {
 
     // 2. Captura os dados do formulário
     const formData = new FormData(event.currentTarget);
-    const nameValue = formData.get("name") as string;
+    const nameInput = formData.get("name") as string;
     const numberInput = formData.get("hits") as string;
 
-    // 3. Conversão para Number
+    // 3. Conversões
+    const nameValue = nameInput.toLowerCase();
     const numberValue = Number(numberInput);
 
     // 4. Validações
@@ -41,21 +47,39 @@ function Card() {
       return;
     }
 
-    if (candidates.some(candidate => candidate.name === nameValue)) {
+    if (candidates.some((candidate) => candidate.name === nameValue)) {
       alert("Esse nome já foi adicionado.");
       return;
     }
 
     // 5. Adiciona o objeto completo ao estado
-    const newCandidate = {name: nameValue, hits: numberValue}
+    const newCandidate = { name: nameValue, hits: numberValue };
 
-    setCandidatees((prevValue) => [...prevValue, newCandidate])
+    setCandidatees((prevValue) => [...prevValue, newCandidate]);
 
     // 6. Limpa o input após adicionar
     event.currentTarget.reset();
   }
 
-  console.log(candidates)
+  function list() {
+    setShowList(true);
+    setApproved(false);
+  }
+
+  function showApproved() {
+    const cutoff = Number(prompt("Qual o número de acertos para aprovação?"));
+
+    if (isNaN(cutoff) || cutoff < 0) return;
+
+    // 1. Filtrar e ordenar
+    const filterAndSorted = [
+      ...candidates.filter((c) => c.hits >= cutoff),
+    ].sort((a, b) => b.hits - a.hits);
+
+    setApprovedCandidates(filterAndSorted);
+    setApproved(true);
+    setShowList(false);
+  }
 
   return (
     <div>
@@ -71,13 +95,53 @@ function Card() {
       </form>
 
       <div>
-        <input type="button" value="Listar Todos" />
-        <input type="button" value="Aprovados 2ª Etapa" />
+        <input type="button" value="Listar Todos" onClick={list} />
+        <input
+          type="button"
+          value="Aprovados 2ª Etapa"
+          onClick={showApproved}
+        />
       </div>
 
-      <div>
-        <p>Eduardo: 36 acertos</p>
-      </div>
+      <br />
+
+      {showList && (
+        <div>
+          {candidates.length > 0 ? (
+            <>
+              <h3>Lista de Candidatos</h3>
+              <ul>
+                {candidates.map((c, index) => (
+                  <li key={index}>
+                    {c.name}: {c.hits} acertos
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p>Nenhum candidato cadastrado.</p>
+          )}
+        </div>
+      )}
+
+      {approved && (
+        <div>
+          {approvedCandidates.length > 0 ? (
+            <>
+              <h3>Candidatos Aprovados - 2ª Etapa</h3>
+              <ul>
+                {approvedCandidates.map((c, index) => (
+                  <li key={index}>
+                    {c.name}: {c.hits} acertos
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p>Nenhum candidato foi aprovado.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
