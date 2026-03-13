@@ -65,7 +65,7 @@ Entre os principais conceitos trabalhados nos exercícios estão:
 
 ## 📁 Estrutura do Repositório
 
-Os exercícios estão organizados de acordo com os capítulos ou temas abordados no livro.
+Os exercícios estão organizados de acordo com os capítulos abordados no livro.
 
 ```
 📦 exercises
