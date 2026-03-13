@@ -67,6 +67,7 @@ Entre os principais conceitos trabalhados nos exercícios estão:
 
 Os exercícios estão organizados de acordo com os capítulos ou temas abordados no livro.
 
+```
 📦 exercises
 ┣ 📂 cap01
 ┃ ┣ 📂 ex01
@@ -75,6 +76,7 @@ Os exercícios estão organizados de acordo com os capítulos ou temas abordados
 ┃ ┃ ┗ 📂 react
 ┃ ┃ ┃ ┗ 📄 index.html
 ┣ 📂 ...
+```
 
 Cada pasta contém os exercícios resolvidos e, quando necessário, comentários explicando a lógica utilizada.
 
