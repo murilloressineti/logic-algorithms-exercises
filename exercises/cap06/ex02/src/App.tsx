@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./styles.css";
+import "./index.css";
 
 /**
  * Elaborar um programa que adicione números a um vetor.
@@ -56,25 +56,25 @@ function Card() {
 
   function checkOrder() {
     // Validação para verificar 2 números ou mais.
-    if(numberValue.length < 2 ) {
-      alert("Deve ter pelo menos 2 números para verificar a ordem.")
+    if (numberValue.length < 2) {
+      alert("Deve ter pelo menos 2 números para verificar a ordem.");
     }
 
-    let orderOk = true
+    let orderOk = true;
     for (let i = 0; i < numberValue.length - 1; i++) {
       // Se o elemento na posição i for MAIOR que o elemento na posição i + 1
-      if(numberValue[i] > numberValue[i + 1]) {
-        orderOk = false
-        break
+      if (numberValue[i] > numberValue[i + 1]) {
+        orderOk = false;
+        break;
       }
     }
 
     if (orderOk) {
-      setMessage("Os números estão em ordem crescente!")
+      setMessage("Os números estão em ordem crescente!");
     } else {
-      setMessage("Atenção... Números não estão em ordem crescente.")
+      setMessage("Atenção... Números não estão em ordem crescente.");
     }
-    
+
     setResult(true);
   }
 

@@ -1,5 +1,5 @@
-import { FormEventHandler, useMemo, useState } from "react";
-import "./styles.css";
+import { useMemo, useState } from "react";
+import "./index.css";
 
 /**
  * a) Elaborar um programa para gerar uma tabela com os
@@ -56,7 +56,7 @@ export default function App() {
     setTab("games-tab");
   };
 
-  const handleAddTeam: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleAddTeam = (event: React.FormEvent<HTMLFormElement>) => {
     // 1. Impede o recarregamento da página
     event.preventDefault();
 

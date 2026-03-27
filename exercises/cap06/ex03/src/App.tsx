@@ -1,5 +1,5 @@
-import { ReactHTMLElement, useState } from "react";
-import "./styles.css";
+import { useState } from "react";
+import "./index.css";
 
 /**
  * Elaborar um programa que leia nome e número de acertos de candidatos inscritos em um concurso.
