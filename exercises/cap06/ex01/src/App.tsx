@@ -1,6 +1,14 @@
 import { useMemo, useState } from "react";
 import "./index.css";
 
+/**
+ * a) Elaborar um programa para gerar uma tabela com os jogos de uma fase eliminatória de um campeonato. O programa deve conter três funções (a serem executadas no evento click de cada botão) para:
+
+ * Validar o preenchimento, adicionar um clube ao vetor e listar os clubes;
+ * Listar os clubes (se houver);
+ * Montar a tabela de jogos, no formato primeiro x último, segundo x penúltimo e assim por diante. Exibir mensagem e não listar a tabela de jogos, caso o número de clubes informados seja ímpar. 
+ */
+
 type Team = {
   name: string;
   badge: string | null;
@@ -17,6 +25,8 @@ type GamesListProps = {
 
 export default function App() {
   const [teams, setTeams] = useState<Team[]>([]);
+  const [showList, setShowList] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
   const games = useMemo(() => {
     if (teams.length % 2 !== 0) return [];
@@ -35,51 +45,55 @@ export default function App() {
 
   const handleRemoveTeam = (indexToRemove: number) => {
     setTeams((prev) => prev.filter((_, index) => index !== indexToRemove));
+    setShowTable(false);
   };
 
   const fetchTeamLogo = async (teamName: string) => {
-    try {
-      const response = await fetch(
-        `https://www.thesportsdb.com/api/v1/json/1/searchteams.php?t=${encodeURIComponent(teamName)}`,
-      );
+    const backgroundColor = "03045e";
+    const textColor = "ffffff";
 
-      const data = await response.json();
+    const badgeUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      teamName,
+    )}&background=${backgroundColor}&color=${textColor}&bold=true&format=svg`;
 
-      if (!data.teams || data.teams.length === 0) {
-        return null;
-      }
-
-      const team = data.teams[0];
-
-      return {
-        name: team.strTeam,
-        badge: team.strTeamBadge || null,
-      };
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+    return {
+      name: teamName,
+      badge: badgeUrl,
+    };
   };
 
   const handleAddTeam = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget; // Guardamos a referência do form
+    const form = event.currentTarget;
     const formData = new FormData(form);
     const teamInput = formData.get("team") as string;
 
     if (!teamInput.trim()) return;
 
+    // Agora a função é instantânea e sempre retorna o nome correto!
     const teamData = await fetchTeamLogo(teamInput);
 
-    // Se a API encontrou o time, usamos os dados reais dela
-    if (teamData) {
-      setTeams((prev) => [...prev, teamData]);
-    } else {
-      // Caso não encontre, adicionamos apenas o nome (ou tratamos o erro)
-      setTeams((prev) => [...prev, { name: teamInput, badge: null }]);
-    }
+    setTeams((prev) => [...prev, teamData]);
 
-    form.reset(); // Limpa o input
+    setShowTable(false); // Esconde a tabela para forçar o novo cálculo
+    form.reset();
+  };
+
+  const handleListTeams = () => {
+    if (teams.length === 0) {
+      alert("Adicione clubes primeiro!");
+      return;
+    }
+    setShowList(!showList);
+  };
+
+  const handleGenerateTable = () => {
+    if (teams.length === 0) {
+      alert("Lista vazia!");
+      return;
+    }
+    // A validação de ímpar acontece no render, mas ativamos a visualização aqui
+    setShowTable(true);
   };
 
   return (
@@ -124,7 +138,6 @@ export default function App() {
                 </div>
 
                 <div className="flex flex-row gap-4">
-                  {/* 🔥 IMPORTANTE: submit */}
                   <button
                     type="submit"
                     className="p-2 w-full bg-blue-900 text-white rounded-md cursor-pointer flex gap-4 items-center justify-center hover:bg-blue-950 transition-all duration-300"
@@ -135,35 +148,66 @@ export default function App() {
                   {/* botão mantido, mas sem lógica inútil */}
                   <button
                     type="button"
+                    onClick={handleListTeams}
                     className="p-2 w-full bg-blue-900 text-white rounded-md cursor-pointer flex gap-4 items-center justify-center hover:bg-blue-950 transition-all duration-300"
                   >
                     Listar Clubes
                   </button>
                 </div>
+
+                <div className="text-right">
+                  <p>
+                    Clubes Cadastrados:{" "}
+                    <span className="p-1 rounded-md text-sm bg-green-700 text-white">
+                      {teams.length}
+                    </span>
+                    .
+                  </p>
+                </div>
               </div>
             </form>
 
-            <div className="bg-white border border-gray-200 rounded-xl shadow-md">
-              <TeamsList teams={teams} onRemove={handleRemoveTeam} />
-            </div>
+            {showList && (
+              <div className="bg-white border border-gray-200 rounded-xl shadow-md animate-in fade-in duration-500">
+                <TeamsList teams={teams} onRemove={handleRemoveTeam} />
+              </div>
+            )}
           </div>
 
           {/* COLUNA DIREITA */}
           <div className="bg-white border border-gray-200 rounded-xl shadow-md">
-            <h1 className="bg-green-600 p-2 px-4 text-2xl font-semibold rounded-t-xl">
+            <h1 className="bg-green-700 p-2 px-4 text-2xl font-semibold rounded-t-xl">
               Tabela de Jogos (Fase Eliminatória)
             </h1>
 
             <div className="p-4">
-              {invalidTeamsSize && teams.length > 0 && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-md text-sm mb-4">
-                  Número de clubes ímpar. Não é possível montar a tabela.
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={handleGenerateTable}
+                className=" p-2 w-full bg-blue-900 text-white rounded-md cursor-pointer flex gap-4 items-center justify-center hover:bg-blue-950 transition-all duration-300"
+              >
+                Montar Tabela de Jogos
+              </button>
             </div>
 
-            <div className="px-4">
-              <GamesList games={games} />
+            <div className="px-4 pb-4">
+              {/* 1. Se o botão foi clicado (showTable) e o número é ÍMPAR: Mostra erro */}
+              {showTable && invalidTeamsSize && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-md text-sm">
+                  Número de clubes ímpar ({teams.length}). Não é possível montar
+                  a tabela.
+                </div>
+              )}
+
+              {/* 2. Se o botão foi clicado (showTable) e o número é PAR: Mostra a lista de jogos */}
+              {showTable && !invalidTeamsSize && <GamesList games={games} />}
+
+              {/* 3. Se o botão ainda NÃO foi clicado: Mostra mensagem de instrução */}
+              {!showTable && (
+                <p className="text-gray-400 text-center py-10">
+                  Clique em "Montar Tabela de Jogos" para gerar os confrontos.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -180,7 +224,7 @@ function TeamsList({ teams, onRemove }: TeamsListProps) {
         Clubes Cadastrados
       </h1>
 
-      <ul className="p-2 px-4">
+      <ul className="p-2 px-4 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         {teams.map((team, index) => (
           <li
             key={`${team.name}-${index}`}
