@@ -10,7 +10,7 @@ import "./index.css";
 
 function Header() {
   return (
-    <div>
+    <div className="bg-blue-100 border-b-gray-800 p-4 text-center text-blue-950 font-bold text-xl rounded-t-xl">
       <h1>Programa Números em Ordem</h1>
     </div>
   );
@@ -70,35 +70,59 @@ function Card() {
     }
 
     if (orderOk) {
-      setMessage("Os números estão em ordem crescente!");
+      setMessage("✅ Os números estão em ordem crescente!");
+      setResult(true);
     } else {
-      setMessage("Atenção... Números não estão em ordem crescente.");
+      setMessage("❌ Atenção... Números não estão em ordem crescente.");
+      setResult(false);
     }
-
-    setResult(true);
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="number">Número:</label>
-        <input type="text" name="number" id="number" />
-        <button type="submit">Adicionar</button>
-      </form>
+    <div className="p-4 flex flex-col gap-4">
+      <div className="flex gap-6 items-center justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="border-2 border-gray-400 rounded-md p-2 flex flex-col"
+        >
+          <label htmlFor="number">Número:</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="number"
+              id="number"
+              className="border p-2 rounded-md"
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md cursor-pointer transition-all duration-300 hover:bg-blue-800 shadow-sm"
+            >
+              Adicionar
+            </button>
+          </div>
+        </form>
+        <button
+          type="button"
+          onClick={checkOrder}
+          className="bg-green-600 text-white py-2 px-4 cursor-pointer transition-all duration-300 hover:bg-green-700 font-medium rounded-md shadow-md h-fit"
+        >
+          Verificar Ordem
+        </button>
+      </div>
 
-      <button type="button" onClick={checkOrder}>
-        Verificar Ordem
-      </button>
-
-      <div>
+      <div className="bg-gray-200 border border-gray-300 p-4 font-medium rounded-md text-xl">
         <h3>Números: {numberValue.join(", ")}</h3>
       </div>
 
-      {result && (
-        <div>
-          <h4>
-            <i>{message}</i>
-          </h4>
+      {message && (
+        <div
+          className={`p-4 rounded-md font-medium ${
+            result
+              ? "bg-green-200 border border-green-400"
+              : "bg-red-200 border border-red-400"
+          }`}
+        >
+          <h4>{message}</h4>
         </div>
       )}
     </div>
@@ -107,9 +131,11 @@ function Card() {
 
 export default function App() {
   return (
-    <main>
-      <Header />
-      <Card />
+    <main className="flex items-center justify-center min-h-screen flex-col bg-blue-50">
+      <div className="bg-white rounded-xl shadow-md">
+        <Header />
+        <Card />
+      </div>
     </main>
   );
 }
