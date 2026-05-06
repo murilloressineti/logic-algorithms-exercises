@@ -1,0 +1,23 @@
+1. Criação do projeto
+- pnpm create vite
+- project name: (ex-0X)
+- React
+- TypeScript + React Compiler
+- Yes
+Fonte: https://pt.vite.dev/guide/
+
+2. Intalação do Tailwind
+- pnpm add tailwindcss @tailwindcss/vite
+- vite.config.ts: 
+    import tailwindcss from '@tailwindcss/vite'
+    plugins: [tailwindcss()]
+- index.css: 
+    @import "tailwindcss";
+Fonte: https://tailwindcss.com/docs/installation/using-vite
+
+3. Scaffolding inicial
+- /public
+- /assets
+- App.css
+- App.tsx
+- index.css (Tailwind)
