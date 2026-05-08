@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./index.css";
 
 /*
@@ -5,8 +6,64 @@ Suponha que o prazo para o pagamento de uma infração de trânsito com desconto
 */
 
 function Card() {
+  const [result, setResult] = useState<any>(null);
+  const [showResult, setShowResult] = useState(false);
+
+  // Formata o valor para o formato de moeda brasileira. Deixamos ele fora do handleSubmit para não criar uma nova instância a cada submissão do formulário, o que pode impactar a performance.
+  const formattedPrice = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    // 1. Impede o recarregamento da página
+    event.preventDefault();
+
+    // 2. Captura os dados do formulário
+    const form = new FormData(event.currentTarget);
+    const inputDate = form.get("date") as string;
+    const inputPrice = form.get("price") as string;
+
+    // 3. Validações
+    // 3.1 Validação Data
+    if (inputDate.trim() === "") {
+      alert("Digite uma data válida");
+      return;
+    }
+
+    // 3.2 Remove os pontos e substitui a vírgula por ponto para converter para número
+    const cleanPrice = parseFloat(
+      inputPrice.replace(/\./g, "").replace(",", "."),
+    );
+
+    // 3.3 Validação do valor da multa
+    if (isNaN(cleanPrice) || cleanPrice <= 0) {
+      alert("Digite valores válidos");
+      return;
+    }
+
+    // 4. Lógica do Preço
+    const originalPrice = cleanPrice;
+    const discountPrice = originalPrice * 0.8; // Multa com desconto
+    const discountValue = originalPrice * 0.2; // Desconto da multa
+
+    // 5. Lógica da Data
+    const deadline = new Date(inputDate); // Converte a string de data para um objeto Date
+    deadline.setDate(deadline.getDate() + 90); // Adiciona 90 dias à data da infração
+
+    // 6. Atualiação do estado
+    setResult({
+      deadline: deadline.toLocaleDateString("pt-BR"),
+      originalPrice: formattedPrice.format(originalPrice),
+      discountPrice: formattedPrice.format(discountPrice),
+      discountValue: formattedPrice.format(discountValue),
+    });
+
+    setShowResult(true);
+  }
+
   return (
-    <div className="bg-white w-xl p-4 rounded-md shadow-lg">
+    <div className="bg-white w-md md:w-xl p-4 rounded-md shadow-lg">
       <h1 className="font-bold text-center text-xl mb-2">
         Calculadora de Multas com Desconto
       </h1>
@@ -16,8 +73,11 @@ function Card() {
       </h2>
 
       <div className="rounded-md shadow-md py-4 px-2">
-        <div className="flex justify-between gap-5">
-          <div className="flex flex-col w-1/2">
+        <form
+          className="flex flex-col md:flex-row justify-between gap-5"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex flex-col md:w-1/2">
             <h3 className="uppercase font-medium">Dados da infração</h3>
 
             <label htmlFor="date">
@@ -31,19 +91,19 @@ function Card() {
               className="border border-slate-300 rounded-md p-1 mb-2"
             />
 
-            <label htmlFor="value">
+            <label htmlFor="price">
               <span className="font-medium">Passo 2:</span> Valor da multa (R$):
             </label>
             <input
               type="text"
-              id="value"
-              name="value"
+              id="price"
+              name="price"
               placeholder="1.000,00"
               className="border border-slate-300 rounded-md p-1 mb-2"
             />
           </div>
 
-          <div className="w-1/2">
+          <div className="md:w-1/2">
             <h3 className="uppercase font-medium">Calcular desconto</h3>
             <p className="text-sm">
               Para pagar com desconto, informe a data da infração e o valor
@@ -59,31 +119,34 @@ function Card() {
               </span>
             </div>
           </div>
-        </div>
+        </form>
 
         <hr className="border-slate-400 my-4" />
 
-        <div className="flex flex-col gap-2">
-          <h3 className="uppercase font-medium">Resultados do cálculo</h3>
+        {showResult && (
+          <div className="flex flex-col gap-2">
+            <h3 className="uppercase font-medium">Resultados do cálculo</h3>
 
-          <div className="bg-green-100 border-2 border-green-200 text-green-800 rounded-md uppercase font-semibold p-4 text-center">
-            <p>Data limite para pagamento com desconto:</p>
-            <p>15/04/2026</p>
+            <div className="bg-green-100 border-2 border-green-200 text-green-800 rounded-md uppercase font-semibold p-4 text-center">
+              <p>Data limite para pagamento com desconto:</p>
+              <p>{result.deadline}</p>
+            </div>
+
+            <div className="bg-green-100 border-2 border-green-200 text-green-800 rounded-md uppercase font-semibold p-4 text-center">
+              <p>Valor com desconto a ser pago (R$):</p>
+              <p>{result.discountPrice}</p>
+              <p className="text-xs text-black">
+                {result.originalPrice} - 20% ({result.discountValue}) ={" "}
+                {result.discountPrice}
+              </p>
+            </div>
+
+            <span className="text-xs mb-2 text-center font-medium">
+              O pagamento com 20% de desconto deve ser realizado até a data
+              limite.
+            </span>
           </div>
-
-          <div className="bg-green-100 border-2 border-green-200 text-green-800 rounded-md uppercase font-semibold p-4 text-center">
-            <p>Valor com desconto a ser pago (R$):</p>
-            <p>800,00</p>
-            <p className="text-sm text-black">
-              R$ 1.000,00 - 20% (R$ 200,00) = R$ 800,00
-            </p>
-          </div>
-
-          <span className="text-xs mb-2 text-center font-medium">
-            O pagamento com 20% de desconto deve ser realizado até a data
-            limite.
-          </span>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -91,7 +154,7 @@ function Card() {
 
 export default function App() {
   return (
-    <div className="flex flex-col  items-center justify-center min-h-screen bg-slate-200">
+    <div className="flex flex-col  items-center justify-center min-h-screen bg-slate-200 p-10">
       <Card />
     </div>
   );
