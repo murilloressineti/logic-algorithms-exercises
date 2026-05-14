@@ -184,7 +184,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen border">
+    <div className="min-h-screen">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
         <Student
