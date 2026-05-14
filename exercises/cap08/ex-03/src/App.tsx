@@ -3,7 +3,7 @@
   • calcularDesconto() – que receba os parâmetros valor e taxa de desconto. Retornar o valor do desconto. 
 */
 
-import React from "react";
+import React, { useState } from "react";
 
 function Header() {
   return (
@@ -18,7 +18,14 @@ function Header() {
   );
 }
 
-function Vaccine() {
+function Vaccine({ setResult }: any) {
+  const [hasAgreement, setHasAgreement] = useState("Sim");
+
+  const formattedCurrency = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // 1. Impede o recarregamento da página
     event.preventDefault();
@@ -26,9 +33,66 @@ function Vaccine() {
     // 2. Captura os dados do formulário
     const form = new FormData(event.currentTarget);
     const inputPrice = form.get("price") as string;
+    const inputHasAgreement = form.get("hasAgreement") as string;
+    const inputAgreementType = form.get("agreementType") as string;
 
-    // 3. Valida o preço
-    console.log(inputPrice);
+    // 3. Validações
+    // 3.1 Remove os pontos e substitui a vírgula por ponto para converter para número
+    const cleanPrice = parseFloat(
+      inputPrice.replace(/\./g, "").replace(",", "."),
+    );
+
+    // 3.2 Validação do valor da vacina
+    if (isNaN(cleanPrice) || cleanPrice <= 0) {
+      alert("Digite valores válidos");
+      return;
+    }
+
+    // 4. Passa os valores capturados para a função de calcular
+    const discountResult = calcDiscount(
+      cleanPrice,
+      inputHasAgreement,
+      inputAgreementType,
+    );
+
+    // 4.1 Salva dentro do state
+    setResult(discountResult);
+  }
+
+  function calcDiscount(
+    price: number,
+    hasAgreement: string,
+    agreementType: string,
+  ) {
+    let agreementName = agreementType;
+
+    if (hasAgreement !== "Sim") {
+      agreementName = "Não possui";
+    }
+
+    let discountPercentage = 0;
+
+    if (hasAgreement === "Sim") {
+      if (agreementType === "Amigo dos Animais") {
+        discountPercentage = 20;
+      } else if (agreementType === "Saúde Animal") {
+        discountPercentage = 50;
+      }
+    } else {
+      discountPercentage = 10;
+    }
+
+    const discountValue = (price * discountPercentage) / 100;
+
+    const finalPrice = price - discountValue;
+
+    return {
+      originalPrice: formattedCurrency.format(price),
+      finalPrice: formattedCurrency.format(finalPrice),
+      discountValue: formattedCurrency.format(discountValue),
+      discountPercentage,
+      agreementType: agreementName,
+    };
   }
 
   return (
@@ -65,6 +129,9 @@ function Vaccine() {
                 name="hasAgreement"
                 value="Sim"
                 defaultChecked
+                onChange={(event) => {
+                  setHasAgreement(event.target.value);
+                }}
               />
               <span>SIM</span>
             </label>
@@ -74,7 +141,10 @@ function Vaccine() {
                 type="radio"
                 id="agreement-no"
                 name="hasAgreement"
-                value="Não"
+                value=""
+                onChange={(event) => {
+                  setHasAgreement(event.target.value);
+                }}
               />
               <span>NÃO</span>
             </label>
@@ -82,23 +152,25 @@ function Vaccine() {
         </fieldset>
 
         {/* Tipo de convênio */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="agreementType" className="font-medium">
-            Selecione o convênio
-          </label>
+        {hasAgreement && (
+          <div className="flex flex-col gap-1">
+            <label htmlFor="agreementType" className="font-medium">
+              Selecione o convênio
+            </label>
 
-          <select
-            id="agreementType"
-            name="agreementType"
-            className="border border-slate-400 rounded-md p-2 shadow-md"
-          >
-            <option value="" disabled>
-              Selecione uma opção
-            </option>
-            <option value="amigo-dos-animais">Amigo dos Animais</option>
-            <option value="saude-animal">Saúde Animal</option>
-          </select>
-        </div>
+            <select
+              id="agreementType"
+              name="agreementType"
+              className="border border-slate-400 rounded-md p-2 shadow-md"
+            >
+              <option value="" disabled>
+                Selecione uma opção
+              </option>
+              <option value="Amigo dos Animais">Amigo dos Animais</option>
+              <option value="Saúde Animal">Saúde Animal</option>
+            </select>
+          </div>
+        )}
 
         <button
           type="submit"
@@ -111,48 +183,54 @@ function Vaccine() {
   );
 }
 
-function Result() {
+function Result({ result }: any) {
   return (
     <div className="bg-gray-100 p-4 w-full rounded-lg shadow-lg border-t-8 border-cyan-500">
-      <header>
+      <header className="mb-4 md:mb-0">
         <h2 className="uppercase text-2xl font-bold">Cálculo do pagamento</h2>
       </header>
 
-      <div className="flex flex-col gap-4 text-center items-center justify-center h-full">
-        {/* Resultado final */}
-        <div
-          className={`border-green-700 bg-green-200 text-green-700  shadow-md rounded-md p-4 uppercase`}
-        >
-          <strong>Valor a pagar: R$500,00</strong>
+      {result && (
+        <div className="flex flex-col gap-4 text-center items-center justify-center h-full">
+          {/* Resultado final */}
+          <div
+            className={`border-green-700 bg-green-200 text-green-700  shadow-md rounded-md p-4 uppercase`}
+          >
+            <strong>Valor a pagar: {result.finalPrice}</strong>
+          </div>
+
+          {/* Informações do cálculo */}
+          <div className="flex flex-col gap-2">
+            <p className="text-lg">
+              <span className="font-semibold">Valor original: </span>
+              {result.originalPrice}
+            </p>
+
+            <p className="text-lg">
+              <span className="font-semibold">Convênio:</span>{" "}
+              {result.agreementType}
+            </p>
+
+            <p className="text-lg">
+              <span className="font-semibold">Desconto aplicado:</span>{" "}
+              {result.discountPercentage}% ({result.discountValue})
+            </p>
+          </div>
         </div>
-
-        {/* Informações do cálculo */}
-        <div className="flex flex-col gap-2">
-          <p className="text-lg">
-            <span className="font-semibold">Valor original:</span> R$ 1.000,00
-          </p>
-
-          <p className="text-lg">
-            <span className="font-semibold">Convênio:</span> Saúde Animal
-          </p>
-
-          <p className="text-lg">
-            <span className="font-semibold">Desconto aplicado:</span> 50% (R$
-            500,00)
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
 export default function App() {
+  const [result, setResult] = useState("");
+
   return (
     <div className="min-h-screen bg-green-100">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
-        <Vaccine />
-        <Result />
+        <Vaccine setResult={setResult} />
+        <Result result={result} />
       </div>
     </div>
   );
