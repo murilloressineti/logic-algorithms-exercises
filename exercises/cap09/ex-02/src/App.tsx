@@ -2,6 +2,16 @@
   Elaborar um programa para cadastrar produtos na lista de compras da semana. Salvar e exibir a listagem dos produtos em ordem alfabética.
 */
 
+import { useState } from "react";
+
+type ListProps = {
+  setProducts: React.Dispatch<React.SetStateAction<string[]>>; // O tipo React.Dispatch<React.SetStateAction<string[]>> é uma função que recebe um novo estado (que pode ser do tipo string[] ou uma função que retorna string[]) e atualiza o estado do componente. Essa função é usada para atualizar o estado do componente quando um novo produto é adicionado à lista de compras.
+};
+
+type ResultProps = {
+  products: string[];
+};
+
 function Header() {
   return (
     <div className="bg-white">
@@ -13,17 +23,35 @@ function Header() {
   );
 }
 
-function List() {
+function List({ setProducts }: ListProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // 1. Impede o recarregamento da página
     event.preventDefault();
 
     // 2. Captura os dados do formulário
     const form = new FormData(event.currentTarget);
-    const inputPrice = form.get("price") as string;
+    const inputProduct = form.get("product") as string;
 
     // 3. Validações
-    // 3.1 Remove os pontos e substitui a vírgula por ponto para converter para número
+    if (inputProduct.trim() === "") {
+      alert("Digite um produto válido");
+      return;
+    }
+
+    console.log("Produto digitado:", inputProduct);
+
+    // O React irá comparar o estado anterior com o novo estado e, se houver mudanças, ele irá re-renderizar os componentes que dependem desse estado. Se o estado for atualizado com um valor diferente do anterior, o React irá perceber a mudança e atualizar a interface do usuário de acordo.
+    setProducts((prevState) => {
+      console.log("Estado anterior:", prevState);
+
+      const newState = [...prevState, inputProduct];
+
+      console.log("Novo estado:", newState);
+
+      return newState;
+    });
+
+    event.currentTarget.reset();
   }
 
   return (
@@ -59,7 +87,7 @@ function List() {
   );
 }
 
-function Result() {
+function Result({ products }: ResultProps) {
   return (
     <div className="bg-gray-100 p-4 w-full rounded-lg shadow-lg border-t-8 border-blue-600">
       <header className="mb-4">
@@ -68,15 +96,17 @@ function Result() {
 
       <div className="flex flex-col gap-4 items-center justify-center">
         <ul className="list-disc space-y-1">
-          <li>Arroz</li>
-          <li>Feijão</li>
-          <li>Café</li>
+          {products.map((product, index) => (
+            <li key={index}>
+              {product.charAt(0).toUpperCase() + product.slice(1).toLowerCase()}
+            </li>
+          ))}
         </ul>
 
         <div
           className={`border-green-700 bg-green-200 text-green-700 shadow-md rounded-md p-2 uppercase`}
         >
-          <strong>Produtos cadastrados: 3</strong>{" "}
+          <strong>Produtos cadastrados: {products.length}</strong>{" "}
         </div>
 
         <button
@@ -91,12 +121,14 @@ function Result() {
 }
 
 export default function App() {
+  const [products, setProducts] = useState<string[]>([]);
+
   return (
     <div className="min-h-screen bg-blue-100">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
-        <List />
-        <Result />
+        <List setProducts={setProducts} />
+        <Result products={products} />
       </div>
     </div>
   );
