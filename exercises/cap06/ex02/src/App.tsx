@@ -1,12 +1,13 @@
-import { useState } from "react";
-import "./index.css";
-
 /**
  * Elaborar um programa que adicione números a um vetor.
  * O programa deve impedir a inclusão de números repetidos.
  * Exibir a lista de números a cada inclusão.
  * Ao clicar no botão Verificar Ordem, o programa deve analisar o conteúdo do vetor e informar se os números estão ou não em ordem crescente.
- */
+*/
+
+import { useState } from "react";
+import "./index.css";
+
 
 function Header() {
   return (

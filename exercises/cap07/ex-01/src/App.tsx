@@ -1,9 +1,9 @@
-import { useState } from "react";
-import "./index.css";
-
 /**
  Você deve desenvolver um programa de criptogra para transmitir mensagens entre amigos. O programa deve ler uma mensagem e, em seguida, exibi-la criptografada. A criptogra a consiste em: a) exibir todas as letras das posições pares da mensagem; b) exibir todas as letras das posições ímpares da mensagem. A Figura 6.15 exibe a mensagem criptografada. O programa deve conter ainda um botão para decriptografar a mensagem, ou seja, retornar a mensagem original a partir do texto cifrado
 **/
+
+import { useState } from "react";
+import "./index.css";
 
 function CardEncrypt() {
   const [messageEncrypt, setMessageEncrypt] = useState("");

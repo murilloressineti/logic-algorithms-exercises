@@ -1,6 +1,3 @@
-import { useState } from "react";
-import "./index.css";
-
 /**
  * Elaborar um programa que leia nome e número de acertos de candidatos inscritos em um concurso.
  * Listar os dados a cada inclusão.
@@ -8,7 +5,10 @@ import "./index.css";
  * O programa deve, então, exibir os candidatos aprovados, ou seja, apenas os que obtiveram nota maior ou igual à nota informada.
  * Exibir os candidatos aprovados em ordem decrescente de número de acertos.
  * Caso nenhum candidato tenha sido aprovado, exibir mensagem.
- */
+*/
+
+import { useState } from "react";
+import "./index.css";
 
 function Header() {
   return (
