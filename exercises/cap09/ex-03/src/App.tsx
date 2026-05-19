@@ -13,6 +13,7 @@ type ServiceProps = {
 
 type ExecuteServiceProps = {
   services: string[];
+  setServices: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 function Header() {
@@ -117,7 +118,17 @@ function AddService({ setServices }: ServiceProps) {
   );
 }
 
-function ExecuteService({ services }: ExecuteServiceProps) {
+function ExecuteService({ services, setServices }: ExecuteServiceProps) {
+  function handleExecuteService() {
+    if (services.length === 0) {
+      alert("Não existem serviços pendentes");
+      return;
+    }
+
+    setServices((prevState) => prevState.slice(1));
+    alert("Serviço executado com sucesso!");
+  }
+
   function formatProductName(service: string) {
     return service.charAt(0).toUpperCase() + service.slice(1).toLowerCase();
   }
@@ -151,6 +162,7 @@ function ExecuteService({ services }: ExecuteServiceProps) {
 
         <button
           type="button"
+          onClick={handleExecuteService}
           className="bg-slate-800 text-white uppercase font-medium w-full p-2 rounded-md cursor-pointer transition-all duration-300 hover:bg-slate-600 shadow-md"
         >
           Executar serviço
@@ -162,13 +174,32 @@ function ExecuteService({ services }: ExecuteServiceProps) {
 
 export default function App() {
   const [services, setServices] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // useEffect para carregar a lista de serviços do LocalStorage quando o componente for montado.
+  useEffect(() => {
+    const savedList = localStorage.getItem("services");
+
+    if (savedList) {
+      // Verifica se existe uma lista salva no LocalStorage. Se existir, ela é convertida de volta para um array de strings usando JSON.parse e o estado products é atualizado com essa lista.
+      setServices(JSON.parse(savedList));
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // useEffect para salvar a lista de serviços no LocalStorage sempre que a lista de serviços for atualizada.
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    localStorage.setItem("services", JSON.stringify(services));
+  }, [services, isLoaded]);
 
   return (
     <div className="min-h-screen bg-slate-200">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
         <AddService setServices={setServices} />
-        <ExecuteService services={services} />
+        <ExecuteService services={services} setServices={setServices} />
       </div>
     </div>
   );
