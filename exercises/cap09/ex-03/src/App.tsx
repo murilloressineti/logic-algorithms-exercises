@@ -5,6 +5,16 @@
   c) um serviço for removido.
 */
 
+import { useEffect, useState } from "react";
+
+type ServiceProps = {
+  setServices: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+type ExecuteServiceProps = {
+  services: string[];
+};
+
 function Header() {
   return (
     <div className="bg-slate-800">
@@ -18,20 +28,54 @@ function Header() {
   );
 }
 
-function AddService() {
+function AddService({ setServices }: ServiceProps) {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (!message) return; // Se não exister mensagem não faz nada.
+
+    const timer = setTimeout(() => {
+      // Quando a mensagem aparece, espera 3 segundos e limpa a mensagem.
+      setMessage("");
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup do efeito. Cancela timers antigos, evita bugs.
+  }, [message]);
+
+  function formatProductName(service: string) {
+    return service.charAt(0).toUpperCase() + service.slice(1).toLowerCase();
+  }
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // 1. Impede o recarregamento da página
     event.preventDefault();
 
     // 2. Captura os dados do formulário
     const form = new FormData(event.currentTarget);
-    const inputProduct = form.get("product") as string;
+    const inputService = form.get("service") as string;
 
     // 3. Validações
-    if (inputProduct.trim() === "") {
-      alert("Digite um produto válido");
+    if (inputService.trim() === "") {
+      alert("Digite um serviço válido");
       return;
     }
+
+    // 4. Atualiza o estado do componente com o novo serviço
+    setServices((prevState) => {
+      console.log("Estado anterior:", prevState);
+
+      const newState = [...prevState, inputService];
+
+      console.log("Novo estado:", newState);
+
+      return newState;
+    });
+
+    setMessage(
+      `Serviço "${formatProductName(inputService)}" adicionado com sucesso`,
+    );
+
+    event.currentTarget.reset();
   }
 
   return (
@@ -41,16 +85,16 @@ function AddService() {
       </header>
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        {/* Preço */}
+        {/* Serviço */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="product" className="font-medium">
+          <label htmlFor="service" className="font-medium">
             Nome do serviço
           </label>
           <input
             type="text"
             placeholder="Ex.: Troca de Óleo, Alinhamento, etc."
-            id="product"
-            name="product"
+            id="service"
+            name="service"
             className="border border-slate-400 rounded-md p-1 shadow-md"
           />
         </div>
@@ -63,42 +107,46 @@ function AddService() {
         </button>
 
         <p
-          className={`border-green-700 bg-green-200 text-green-700 shadow-md rounded-md p-2 text-center`}
+          className={`border-green-700 bg-green-200 text-green-700 shadow-md rounded-md p-2 text-center transition-all duration-500 transform
+            ${message ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"}`}
         >
-          Serviço "Troca de óleo" adicionado com sucesso
+          {message || " "}
         </p>
       </form>
     </div>
   );
 }
 
-function ExecuteService() {
+function ExecuteService({ services }: ExecuteServiceProps) {
+  function formatProductName(service: string) {
+    return service.charAt(0).toUpperCase() + service.slice(1).toLowerCase();
+  }
+
   return (
     <div className="bg-gray-200 p-4 w-full rounded-lg shadow-lg border-t-8 border-slate-800">
-      <header className="mb-4 flex justify-between">
+      <header className="mb-4 flex justify-between ">
         <h2 className="uppercase text-2xl font-bold">Serviços pendentes</h2>
         <span className="text-2xl">⏱️</span>
       </header>
 
       <div className="flex flex-col gap-4 items-center justify-center">
         <ul className="space-y-3">
-          <li className="p-3 rounded-xl bg-slate-50 border border-slate-300">
-            <span className="text-slate-700 font-medium">
-              Serviço 1: Troca de Óleo
-            </span>
-          </li>
-
-          <li className="p-3 rounded-xl bg-slate-50 border border-slate-300">
-            <span className="text-slate-700 font-medium">
-              Serviço 2: Alinhamento
-            </span>
-          </li>
+          {services.map((service, index) => (
+            <li
+              key={index}
+              className="p-3 rounded-xl bg-slate-50 border border-slate-300"
+            >
+              <span className="text-slate-700 font-medium">
+                Serviço {index + 1}: {formatProductName(service)}
+              </span>
+            </li>
+          ))}
         </ul>
 
         <div
           className={`border-orange-700 bg-orange-200 text-orange-700 shadow-md rounded-md p-2 uppercase`}
         >
-          <strong>Em fila: 2</strong>{" "}
+          <strong>Em fila: {services.length}</strong>{" "}
         </div>
 
         <button
@@ -113,12 +161,14 @@ function ExecuteService() {
 }
 
 export default function App() {
+  const [services, setServices] = useState<string[]>([]);
+
   return (
     <div className="min-h-screen bg-slate-200">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
-        <AddService />
-        <ExecuteService />
+        <AddService setServices={setServices} />
+        <ExecuteService services={services} />
       </div>
     </div>
   );
