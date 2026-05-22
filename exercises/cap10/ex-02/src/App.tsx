@@ -4,6 +4,14 @@
 
 import { useState } from "react";
 
+type NameProps = {
+  setName: React.Dispatch<React.SetStateAction<string>>;
+};
+
+type ResultName = {
+  name: string;
+};
+
 function Header() {
   return (
     <div className="bg-blue-900">
@@ -17,7 +25,7 @@ function Header() {
   );
 }
 
-function Identity() {
+function Identity({ setName }: NameProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // 1. Impede o recarregamento da página
     event.preventDefault();
@@ -32,9 +40,9 @@ function Identity() {
       return;
     }
 
-    console.log(inputName)
+    setName(inputName);
 
-    event.currentTarget.reset()
+    event.currentTarget.reset();
   }
 
   return (
@@ -53,8 +61,6 @@ function Identity() {
           <input
             type="text"
             placeholder="Ex.: Ana Maria Souza Sauro"
-            min={1}
-            max={120}
             id="identity"
             name="identity"
             className="border border-slate-400 rounded-md p-1 shadow-md"
@@ -72,43 +78,69 @@ function Identity() {
   );
 }
 
-function NameInParts() {
+function NameInParts({ name }: ResultName) {
+  function formatName(name: string) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+
+  const partsOfTheName = name.split(" ");
+
+  const colors = [
+    "text-red-600",
+    "text-blue-600",
+    "text-green-600",
+    "text-yellow-600",
+    "text-purple-600",
+    "text-pink-600",
+  ];
+
+  function getRandomColor() {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+
+    return colors[randomIndex];
+  }
+
   return (
     <div className="bg-gray-200 p-4 w-full rounded-lg shadow-lg border-t-8 border-blue-900">
       <header className="mb-4">
         <h2 className="uppercase text-2xl font-bold">Nome em partes</h2>
       </header>
 
-      <div className="flex flex-col items-center justify-center">
-        <div className="bg-slate-300 p-4 flex w-full h-full rounded-md items-center justify-center text-6xl">
-          <div className="flex flex-col items-center justify-center font-bold">
-            <span className="text-red-600">Ana</span>
-            <span className="text-green-600">Maria</span>
-            <span className="text-blue-600">Souza</span>
-            <span className="text-yellow-600">Sauro</span>
+      {name && (
+        <div className="flex flex-col items-center justify-center">
+          <div className="bg-slate-300 p-4 flex w-full h-full rounded-md items-center justify-center text-6xl">
+            <div className="flex flex-col items-center justify-center font-bold">
+              {partsOfTheName.map((name, index) => (
+                <div key={index}>
+                  <span className={getRandomColor()}>{formatName(name)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <span className="mt-1 mb-4">Partes do nome em cores aleatórias.</span>
+
+          <div
+            className={`flex gap-1 border border-slate-700 bg-slate-200 text-slate-700 shadow-md rounded-md p-2 uppercase`}
+          >
+            <span>🎉</span>
+            <strong>Partes Exibidas</strong>{" "}
           </div>
         </div>
-
-        <span className="mt-1 mb-4">Partes do nome em cores aleatórias.</span>
-
-        <div
-          className={`flex gap-1 border border-slate-700 bg-slate-200 text-slate-700 shadow-md rounded-md p-2 uppercase`}
-        >
-          <span>🎉</span>
-          <strong>Partes Exibidas</strong>{" "}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
 export default function App() {
+  const [name, setName] = useState("");
+
   return (
     <div className="min-h-screen bg-slate-200">
       <Header />
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 py-10 max-w-280 mx-auto px-6">
-        <Identity />
-        <NameInParts />
+        <Identity setName={setName} />
+        <NameInParts name={name} />
       </div>
     </div>
   );
