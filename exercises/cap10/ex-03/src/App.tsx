@@ -117,7 +117,7 @@ function GameTable({ team, tableCreated, setTableCreated }: GameTableProps) {
 
   function handleCreateGames() {
     if (team.length % 2 !== 0) {
-      alert("Adicione um número para de clubes");
+      alert("Adicione um número par de clubes");
       return;
     }
 
